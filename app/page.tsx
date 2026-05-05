@@ -1,5 +1,6 @@
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
+import MapPreview from "../components/MapPreview";
 
 export default function Home() {
   return (
@@ -194,7 +195,7 @@ export default function Home() {
                   Pending
                 </span>
               </div>
-              <div className="mt-4 h-28 rounded-2xl bg-white/20" />
+              <MapPreview />
             </div>
           </div>
         </section>

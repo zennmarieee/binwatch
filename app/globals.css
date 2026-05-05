@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 :root {
   --background: #ffffff;
@@ -23,4 +24,19 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Leaflet container tweaks to ensure it respects card radius and clipping */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  box-sizing: border-box;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/* Make tiles render crisply and avoid artifacts when clipped */
+.leaflet-tile {
+  image-rendering: auto;
 }
