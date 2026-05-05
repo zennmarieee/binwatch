@@ -1,6 +1,13 @@
+"use client";
+
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
-import MapPreview from "../components/MapPreview";
+import dynamic from "next/dynamic";
+
+const MapPreview = dynamic(() => import("../components/MapPreview"), {
+  ssr: false,
+  loading: () => <div className="h-28 w-full rounded-2xl bg-gray-100" />,
+});
 
 export default function Home() {
   return (
