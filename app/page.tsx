@@ -39,7 +39,7 @@ export default function Home() {
         {/* Hero */}
         <section
           id="hero"
-          className="hero-grid relative mx-auto max-w-5xl rounded-4xl border border-black/5 bg-white/70 px-6 py-12 text-center backdrop-blur-sm sm:px-10"
+          className="hero-grid relative mx-auto max-w-5xl rounded-4xl border border-black/5 px-6 py-12 text-center backdrop-blur-sm sm:px-10"
         >
           <span className="mb-5 inline-flex rounded-full border border-[#9adf98] bg-[#d9f6d4] px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#0f4a16]">
             QR-Based Waste Reporting for Campuses
@@ -129,39 +129,14 @@ export default function Home() {
                 </button>
               </form>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                {homepageContent.publicLookup.metrics.map((metric) => (
-                  <div
-                    key={metric.label}
-                    className="rounded-2xl border border-black/5 bg-[#f3f6f3] p-4"
-                  >
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
-                      {metric.label}
-                    </p>
-                    <p className="mt-1 text-2xl font-black text-green-700">
-                      {metric.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
               <div className="rounded-3xl border border-dashed border-green-700/30 bg-[#f7faf7] p-5">
                 <p className="text-sm font-bold text-[#191c1d]">
-                  Contribution history preview
+                  No result yet
                 </p>
-                <ul className="mt-3 space-y-3 text-sm text-[#4c616c]">
-                  {homepageContent.publicLookup.history.map((entry) => (
-                    <li
-                      key={entry.label}
-                      className="flex items-center justify-between rounded-2xl bg-white px-4 py-3"
-                    >
-                      <span>{entry.label}</span>
-                      <span className="font-bold text-green-700">
-                        {entry.value}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="mt-2 text-sm text-[#4c616c]">
+                  Enter a Student ID and click Lookup. Points and contribution
+                  history will appear here once connected to the database.
+                </p>
               </div>
             </div>
           </div>
