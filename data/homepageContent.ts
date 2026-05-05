@@ -4,8 +4,8 @@ export const homepageContent = {
     badgeText: "Public Access",
     links: [
       { label: "Home", href: "#hero", isActive: true },
-      { label: "How It Works", href: "#how-it-works" },
       { label: "Lookup", href: "#lookup" },
+      { label: "How It Works", href: "#how-it-works" },
     ],
   },
   howItWorks: [

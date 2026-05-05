@@ -14,7 +14,18 @@ export default function Home() {
         .surface-card {
           background: linear-gradient(165deg, #ffffff 0%, #f6faf6 100%);
           border: 1px solid rgba(0, 0, 0, 0.05);
-          box-shadow: 0 18px 45px rgba(16, 24, 16, 0.08);
+          box-shadow: 0 7px 18px rgba(16, 24, 16, 0.05);
+        }
+        .map-card {
+          box-shadow: 0 8px 20px rgba(8, 38, 58, 0.16);
+        }
+        @media (min-width: 640px) {
+          .surface-card {
+            box-shadow: 0 12px 30px rgba(16, 24, 16, 0.06);
+          }
+          .map-card {
+            box-shadow: 0 12px 30px rgba(8, 38, 58, 0.22);
+          }
         }
         .hero-grid {
           background-image:
@@ -68,38 +79,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How It Works */}
-        <section id="how-it-works">
-          <div className="mb-6 text-center">
-            <p className="text-sm font-bold uppercase tracking-widest text-green-700">
-              Quick flow
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
-              How it works
-            </h2>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {homepageContent.howItWorks.map((item) => (
-              <article
-                key={item.step}
-                className="asymmetric-card surface-card p-6"
-              >
-                <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-green-700">
-                  Step {item.step}
-                </p>
-                <h3 className="mb-2 text-xl font-bold text-[#191c1d]">
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-6 text-[#4c616c]">
-                  {item.description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* Lookup */}
+        {/* Lookup (moved above How It Works) */}
         <section id="lookup" className="surface-card rounded-3xl p-8 sm:p-10">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-5">
@@ -142,6 +122,37 @@ export default function Home() {
           </div>
         </section>
 
+        {/* How It Works (moved below Lookup) */}
+        <section id="how-it-works">
+          <div className="mb-6 text-center">
+            <p className="text-sm font-bold uppercase tracking-widest text-green-700">
+              Quick flow
+            </p>
+            <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
+              How it works
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {homepageContent.howItWorks.map((item) => (
+              <article
+                key={item.step}
+                className="asymmetric-card surface-card p-6"
+              >
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-green-700">
+                  Step {item.step}
+                </p>
+                <h3 className="mb-2 text-xl font-bold text-[#191c1d]">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-6 text-[#4c616c]">
+                  {item.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         {/* Public Info */}
         <section className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="surface-card rounded-3xl p-8">
@@ -168,7 +179,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-linear-to-br from-[#0e5c88] to-[#0a83b0] p-8 text-[#e9f2ff] shadow-[0_14px_40px_rgba(8,38,58,0.28)]">
+          <div className="map-card rounded-3xl bg-linear-to-br from-[#0e5c88] to-[#0a83b0] p-8 text-[#e9f2ff]">
             <p className="text-sm font-bold uppercase tracking-widest text-[#cee5ff]">
               Map preview
             </p>
