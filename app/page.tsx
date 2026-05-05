@@ -1,3 +1,5 @@
+import ModelViewer from "./ModelViewer";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black flex flex-col">
@@ -38,6 +40,10 @@ export default function Home() {
           reporting overflowing bins in real time. Scan, report, and make a
           difference—one bin at a time.
         </p>
+        {/* 3D Model Viewer */}
+        <div className="w-full max-w-xl mx-auto mb-8">
+          <ModelViewer />
+        </div>
         <a
           href="#report"
           className="inline-block rounded-full bg-green-700 text-white px-8 py-3 font-semibold text-lg shadow hover:bg-green-800 transition-colors"
