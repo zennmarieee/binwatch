@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+
 type HeaderLink = {
   label: string;
   href: string;
@@ -11,6 +15,48 @@ type PublicHeaderProps = {
 };
 
 export function PublicHeader({ brand, links, badgeText }: PublicHeaderProps) {
+  const sectionLinks = useMemo(
+    () => links.filter((link) => link.href.startsWith("#")),
+    [links],
+  );
+  const [activeHref, setActiveHref] = useState(
+    sectionLinks[0]?.href ?? links[0]?.href ?? "",
+  );
+
+  useEffect(() => {
+    if (!sectionLinks.length) return;
+
+    const observers: IntersectionObserver[] = [];
+
+    sectionLinks.forEach((link) => {
+      const sectionId = link.href.slice(1);
+      const sectionEl = document.getElementById(sectionId);
+      if (!sectionEl) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveHref(link.href);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: "-35% 0px -50% 0px",
+          threshold: 0,
+        },
+      );
+
+      observer.observe(sectionEl);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, [sectionLinks]);
+
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-black/5 bg-[#f7faf7]/78 shadow-sm backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3">
@@ -28,8 +74,9 @@ export function PublicHeader({ brand, links, badgeText }: PublicHeaderProps) {
             {links.map((link) => (
               <a
                 key={link.href}
+                onClick={() => setActiveHref(link.href)}
                 className={
-                  link.isActive
+                  link.href === activeHref
                     ? "rounded-full bg-[#d8f4d7] px-3 py-1 text-sm font-bold text-[#12581e] transition-colors"
                     : "text-sm font-bold text-gray-500 transition-colors hover:text-green-700"
                 }

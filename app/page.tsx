@@ -35,7 +35,7 @@ export default function Home() {
         badgeText={homepageContent.header.badgeText}
       />
 
-      <main className="mx-auto max-w-7xl px-6 pb-16 pt-24">
+      <main className="mx-auto max-w-7xl space-y-20 px-6 pb-20 pt-28 sm:space-y-24">
         {/* Hero */}
         <section
           id="hero"
@@ -69,7 +69,7 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="mt-16">
+        <section id="how-it-works">
           <div className="mb-6 text-center">
             <p className="text-sm font-bold uppercase tracking-widest text-green-700">
               Quick flow
@@ -100,7 +100,7 @@ export default function Home() {
         </section>
 
         {/* Lookup */}
-        <section id="lookup" className="surface-card mt-16 rounded-3xl p-8">
+        <section id="lookup" className="surface-card rounded-3xl p-8 sm:p-10">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-5">
               <p className="text-sm font-bold uppercase tracking-widest text-green-700">
@@ -143,7 +143,7 @@ export default function Home() {
         </section>
 
         {/* Public Info */}
-        <section className="mt-16 grid gap-6 lg:grid-cols-2">
+        <section className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="surface-card rounded-3xl p-8">
             <p className="text-sm font-bold uppercase tracking-widest text-green-700">
               Campus stats
@@ -189,7 +189,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <section className="surface-card mt-16 rounded-3xl p-8">
+        <section className="surface-card rounded-3xl p-8 sm:p-10">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-extrabold text-[#191c1d]">
