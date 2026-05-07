@@ -2,49 +2,11 @@
 
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
-import dynamic from "next/dynamic";
-
-const MapPreview = dynamic(() => import("../components/MapPreview"), {
-  ssr: false,
-  loading: () => <div className="h-28 w-full rounded-2xl bg-gray-100" />,
-});
+import MapPreview from "../components/MapPreview";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#f7faf7] text-[#191c1d]">
-      <style>{`
-        .asymmetric-card {
-          border-top-left-radius: 1.5rem;
-          border-bottom-right-radius: 1.5rem;
-          border-top-right-radius: 0.75rem;
-          border-bottom-left-radius: 0.75rem;
-        }
-        .surface-card {
-          background: linear-gradient(165deg, #ffffff 0%, #f6faf6 100%);
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          box-shadow: 0 7px 18px rgba(16, 24, 16, 0.05);
-        }
-        .map-card {
-          box-shadow: 0 8px 20px rgba(8, 38, 58, 0.16);
-        }
-        @media (min-width: 640px) {
-          .surface-card {
-            box-shadow: 0 12px 30px rgba(16, 24, 16, 0.06);
-          }
-          .map-card {
-            box-shadow: 0 12px 30px rgba(8, 38, 58, 0.22);
-          }
-        }
-        .hero-grid {
-          background-image:
-            radial-gradient(circle at 1px 1px, rgba(16, 24, 16, 0.07) 1px, transparent 0);
-          background-size: 18px 18px;
-        }
-        .floating-orb {
-          filter: blur(45px);
-        }
-      `}</style>
-
       <div className="floating-orb pointer-events-none absolute -left-28 top-14 h-64 w-64 rounded-full bg-[#9eea9f]/45" />
       <div className="floating-orb pointer-events-none absolute -right-24 top-60 h-72 w-72 rounded-full bg-[#8ecdf7]/30" />
 
@@ -162,48 +124,47 @@ export default function Home() {
         </section>
 
         {/* Public Info */}
-        <section className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-          <div className="surface-card rounded-3xl p-8">
-            <p className="text-sm font-bold uppercase tracking-widest text-green-700">
-              Campus stats
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
-              Public campus overview
-            </h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {homepageContent.campusStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-black/5 bg-[#f3f6f3] p-4"
-                >
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
-                    {stat.label}
-                  </p>
-                  <p className="mt-2 text-2xl font-black text-green-700">
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="map-card rounded-3xl bg-linear-to-br from-[#0e5c88] to-[#0a83b0] p-8 text-[#e9f2ff]">
-            <p className="text-sm font-bold uppercase tracking-widest text-[#cee5ff]">
-              Map preview
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold">Public map preview</h2>
-            <p className="mt-3 text-sm leading-6 text-[#e9f2ff]/85">
-              Keep this small so the page stays light.
-            </p>
-            <div className="mt-6 rounded-3xl bg-white/15 p-4 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-bold">Library - North Wing</span>
-                <span className="rounded-full bg-[#a3f69c] px-3 py-1 text-xs font-bold text-[#002204]">
-                  Pending
-                </span>
+        <section className="surface-card rounded-3xl p-8">
+          <p className="text-sm font-bold uppercase tracking-widest text-green-700">
+            Campus stats
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
+            Public campus overview
+          </h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {homepageContent.campusStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-2xl border border-black/5 bg-[#f3f6f3] p-4"
+              >
+                <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
+                  {stat.label}
+                </p>
+                <p className="mt-2 text-2xl font-black text-green-700">
+                  {stat.value}
+                </p>
               </div>
-              <MapPreview />
+            ))}
+          </div>
+        </section>
+
+        {/* Map Preview */}
+        <section className="map-card rounded-3xl bg-linear-to-br from-[#0e5c88] to-[#0a83b0] p-8 text-[#e9f2ff]">
+          <p className="text-sm font-bold uppercase tracking-widest text-[#cee5ff]">
+            Map preview
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold">Public map preview</h2>
+          <p className="mt-3 text-sm leading-6 text-[#e9f2ff]/85">
+            Keep this small so the page stays light.
+          </p>
+          <div className="mt-6 rounded-3xl bg-white/15 p-4 backdrop-blur-sm">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-bold">Library - North Wing</span>
+              <span className="rounded-full bg-[#a3f69c] px-3 py-1 text-xs font-bold text-[#002204]">
+                Pending
+              </span>
             </div>
+            <MapPreview />
           </div>
         </section>
 

@@ -40,3 +40,98 @@ body {
 .leaflet-tile {
   image-rendering: auto;
 }
+
+
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Homepage styles */
+.asymmetric-card {
+  border-top-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  border-top-right-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
+.surface-card {
+  background: linear-gradient(165deg, #ffffff 0%, #f6faf6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 7px 18px rgba(16, 24, 16, 0.05);
+}
+
+.map-card {
+  box-shadow: 0 8px 20px rgba(8, 38, 58, 0.16);
+}
+
+@media (min-width: 640px) {
+  .surface-card {
+    box-shadow: 0 12px 30px rgba(16, 24, 16, 0.06);
+  }
+
+  .map-card {
+    box-shadow: 0 12px 30px rgba(8, 38, 58, 0.22);
+  }
+}
+
+.hero-grid {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(16, 24, 16, 0.07) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+}
+
+.floating-orb {
+  filter: blur(45px);
+}
+
+.legend {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.legend h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+.legend-swatch--overflow {
+  background: #d62828;
+}
+
+.legend-swatch--available {
+  background: #2a9d8f;
+}
+
+.legend-swatch--map {
+  background: #d9e2ec;
+}
