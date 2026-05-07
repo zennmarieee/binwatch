@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- Ongoing development
+### Changed
+
+- Extracted the public student lookup into a dedicated component for cleaner homepage structure
+- Moved mock student lookup records into a separate data module (`data/publicStudentLookup.ts`)
+- Refined the public lookup result layout to better balance identity, stats, and recent activity
+
+### Fixed
+
+- Loaded Leaflet map preview client-side only to avoid `window is not defined` during SSR
+- Removed the global Leaflet height override that was collapsing the map container
+- Stabilized the map preview container sizing so the campus map renders reliably on the homepage
 
 ## [0.2.0] - 2026-05-06
 

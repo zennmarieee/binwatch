@@ -31,6 +31,10 @@ export default function MapPreview() {
     }
 
     try {
+      const bounds: L.LatLngBoundsExpression = [
+        [8.48, 124.65],
+        [8.491, 124.662],
+      ];
       const container = mapContainerRef.current;
 
       const map = L.map(container, {
@@ -40,15 +44,26 @@ export default function MapPreview() {
         maxZoom: 19,
         zoomSnap: 0.5,
         zoomDelta: 0.5,
+        maxBounds: bounds,
+        maxBoundsViscosity: 1.0,
       });
 
       mapRef.current = map;
 
       // Add tile layer (OSM)
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-        maxZoom: 19,
-      }).addTo(map);
+      // L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      //   attribution: "&copy; OpenStreetMap contributors",
+      //   maxZoom: 19,
+      // }).addTo(map);
+
+      L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+  {
+    attribution: "&copy; OpenStreetMap & CARTO",
+    maxZoom: 19,
+  }
+).addTo(map);
+      
 
       // Invalidate size to render properly
       setTimeout(() => {
