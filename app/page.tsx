@@ -124,12 +124,6 @@ export default function Home() {
             Keep this small so the page stays light.
           </p>
           <div className="mt-6 rounded-3xl bg-white/15 p-4 backdrop-blur-sm">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-bold">Library - North Wing</span>
-              <span className="rounded-full bg-[#a3f69c] px-3 py-1 text-xs font-bold text-[#002204]">
-                Pending
-              </span>
-            </div>
             <MapPreview />
           </div>
         </section>
