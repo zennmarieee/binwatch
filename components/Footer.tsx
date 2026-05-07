@@ -1,3 +1,13 @@
+import {
+  CircleHelp,
+  Copyright,
+  FileText,
+  Mail,
+  Scale,
+  School,
+  Shield,
+} from "lucide-react";
+
 export default function Footer() {
   return (
     <footer className="border-t border-black/5 bg-white/50 backdrop-blur-sm">
@@ -18,24 +28,27 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:support@binwatch.com"
-                  className="transition-colors hover:text-[#176d25]"
+                  className="inline-flex items-center transition-colors hover:text-[#176d25]"
                 >
+                  <Mail className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                   support@binwatch.com
                 </a>
               </li>
               <li>
                 <a
                   href="#faq"
-                  className="transition-colors hover:text-[#176d25]"
+                  className="inline-flex items-center transition-colors hover:text-[#176d25]"
                 >
+                  <CircleHelp className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                   Help & FAQ
                 </a>
               </li>
               <li>
                 <a
                   href="#feedback"
-                  className="transition-colors hover:text-[#176d25]"
+                  className="inline-flex items-center transition-colors hover:text-[#176d25]"
                 >
+                  <FileText className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                   Send Feedback
                 </a>
               </li>
@@ -47,8 +60,14 @@ export default function Footer() {
             <h4 className="font-semibold text-[#102013]">About</h4>
             <ul className="space-y-2 text-sm text-[#4c616c]">
               <li>Developed by: 4PAX Team</li>
-              <li>Partner Institution: USTP </li>
-              <li>© 2026 BinWatch</li>
+              <li className="inline-flex items-center">
+                <School className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                Partner Institution: USTP
+              </li>
+              <li className="inline-flex items-center">
+                <Copyright className="mr-2 h-3.5 w-3.5" aria-hidden="true" />©
+                2026 BinWatch
+              </li>
             </ul>
           </div>
 
@@ -59,16 +78,18 @@ export default function Footer() {
               <li>
                 <a
                   href="#privacy"
-                  className="transition-colors hover:text-[#176d25]"
+                  className="inline-flex items-center transition-colors hover:text-[#176d25]"
                 >
+                  <Shield className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                   Privacy Policy
                 </a>
               </li>
               <li>
                 <a
                   href="#terms"
-                  className="transition-colors hover:text-[#176d25]"
+                  className="inline-flex items-center transition-colors hover:text-[#176d25]"
                 >
+                  <Scale className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                   Terms of Use
                 </a>
               </li>

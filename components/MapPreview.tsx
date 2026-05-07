@@ -57,13 +57,12 @@ export default function MapPreview() {
       // }).addTo(map);
 
       L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-  {
-    attribution: "&copy; OpenStreetMap & CARTO",
-    maxZoom: 19,
-  }
-).addTo(map);
-      
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        {
+          attribution: "&copy; OpenStreetMap & CARTO",
+          maxZoom: 19,
+        },
+      ).addTo(map);
 
       // Invalidate size to render properly
       setTimeout(() => {
@@ -96,21 +95,26 @@ export default function MapPreview() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <div className="flex w-full flex-col gap-3">
       <div
         ref={mapContainerRef}
-        className="w-full rounded-xl overflow-hidden"
+        className="w-full overflow-hidden rounded-xl"
         style={{ height: "320px" }}
       />
 
-      <div className="text-xs space-y-1.5">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-red-600"></span>
-          <span className="text-gray-600">Overflow bin</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-teal-600"></span>
-          <span className="text-gray-600">Available bin</span>
+      <div className="rounded-xl border border-white/50 bg-white/90 px-3 py-2.5 text-xs text-[#1f3340] backdrop-blur-sm">
+        <p className="mb-2 font-semibold uppercase tracking-wide text-[#2a4a5c]">
+          Legend
+        </p>
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-red-600 ring-2 ring-red-100" />
+            <span className="font-medium">Overflow bin</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-teal-600 ring-2 ring-teal-100" />
+            <span className="font-medium">Available bin</span>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,15 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import {
+  Award,
+  Clock3,
+  FileText,
+  Search,
+  ShieldCheck,
+  TrendingUp,
+  UserRound,
+} from "lucide-react";
 import { homepageContent } from "../data/homepageContent";
 import { publicStudentLookupData } from "../data/publicStudentLookup";
 
@@ -48,17 +57,24 @@ export default function PublicStudentLookup() {
             className="flex flex-col gap-3 rounded-3xl border border-black/5 bg-[#f3f6f3] p-4 sm:flex-row sm:items-center"
             onSubmit={handleLookup}
           >
-            <input
-              className="w-full rounded-full border border-black/5 bg-white px-5 py-4 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
-              placeholder="Enter Student ID (e.g. STU-2024)"
-              type="text"
-              value={studentQuery}
-              onChange={(event) => setStudentQuery(event.target.value)}
-            />
+            <div className="relative w-full">
+              <Search
+                className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5f6c62]"
+                aria-hidden="true"
+              />
+              <input
+                className="w-full rounded-full border border-black/5 bg-white py-4 pl-11 pr-5 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
+                placeholder="Enter Student ID (e.g. STU-2024)"
+                type="text"
+                value={studentQuery}
+                onChange={(event) => setStudentQuery(event.target.value)}
+              />
+            </div>
             <button
-              className="rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e]"
+              className="inline-flex items-center justify-center rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e]"
               type="submit"
             >
+              <Search className="mr-2 h-4 w-4" aria-hidden="true" />
               Lookup
             </button>
           </form>
@@ -79,6 +95,10 @@ export default function PublicStudentLookup() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.25em] text-green-700">
+                      <ShieldCheck
+                        className="mr-1 inline-block h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
                       Match found
                     </p>
                     <h3 className="mt-2 text-2xl font-black text-[#191c1d]">
@@ -94,6 +114,10 @@ export default function PublicStudentLookup() {
 
                   <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
+                      <UserRound
+                        className="mr-1 inline-block h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
                       Status
                     </p>
                     <p className="mt-1 text-sm font-bold text-green-700">
@@ -107,18 +131,28 @@ export default function PublicStudentLookup() {
                     {
                       label: "Points",
                       value: lookupResult.points.toLocaleString(),
+                      icon: Award,
                     },
                     {
                       label: "Reports",
                       value: lookupResult.reports.toString(),
+                      icon: FileText,
                     },
-                    { label: "Rank", value: lookupResult.rank },
+                    {
+                      label: "Rank",
+                      value: lookupResult.rank,
+                      icon: TrendingUp,
+                    },
                   ].map((metric) => (
                     <div
                       key={metric.label}
                       className="rounded-2xl border border-black/5 bg-white p-4"
                     >
                       <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
+                        <metric.icon
+                          className="mr-1 inline-block h-3.5 w-3.5"
+                          aria-hidden="true"
+                        />
                         {metric.label}
                       </p>
                       <p className="mt-2 text-2xl font-black text-green-700">
@@ -131,9 +165,17 @@ export default function PublicStudentLookup() {
                 <div>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-bold text-[#191c1d]">
+                      <FileText
+                        className="mr-1 inline-block h-4 w-4"
+                        aria-hidden="true"
+                      />
                       Recent reports
                     </p>
                     <p className="text-xs text-[#4c616c]">
+                      <Clock3
+                        className="mr-1 inline-block h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
                       Last seen {lookupResult.lastSeen}
                     </p>
                   </div>
