@@ -1,8 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
-import MapPreview from "../components/MapPreview";
+import PublicStudentLookup from "../components/PublicStudentLookup";
+
+const MapPreview = dynamic(() => import("../components/MapPreview"), {
+  ssr: false,
+  loading: () => <div className="h-80 w-full rounded-xl bg-white/20" />,
+});
 
 export default function Home() {
   return (
@@ -50,47 +56,7 @@ export default function Home() {
         </section>
 
         {/* Lookup (moved above How It Works) */}
-        <section id="lookup" className="surface-card rounded-3xl p-8 sm:p-10">
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
-            <div className="lg:col-span-5">
-              <p className="text-sm font-bold uppercase tracking-widest text-green-700">
-                Public student lookup
-              </p>
-              <h2 className="mt-2 text-3xl font-extrabold text-[#191c1d]">
-                {homepageContent.publicLookup.title}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-[#4c616c]">
-                {homepageContent.publicLookup.description}
-              </p>
-            </div>
-
-            <div className="lg:col-span-7 space-y-4">
-              <form className="flex flex-col gap-3 rounded-3xl border border-black/5 bg-[#f3f6f3] p-4 sm:flex-row sm:items-center">
-                <input
-                  className="w-full rounded-full border border-black/5 bg-white px-5 py-4 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
-                  placeholder="Enter Student ID (e.g. STU-2024)"
-                  type="text"
-                />
-                <button
-                  className="rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e]"
-                  type="button"
-                >
-                  Lookup
-                </button>
-              </form>
-
-              <div className="rounded-3xl border border-dashed border-green-700/30 bg-[#f7faf7] p-5">
-                <p className="text-sm font-bold text-[#191c1d]">
-                  No result yet
-                </p>
-                <p className="mt-2 text-sm text-[#4c616c]">
-                  Enter a Student ID and click Lookup. Points and contribution
-                  history will appear here once connected to the database.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <PublicStudentLookup />
 
         {/* How It Works (moved below Lookup) */}
         <section id="how-it-works">
