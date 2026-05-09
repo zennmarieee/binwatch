@@ -129,3 +129,19 @@ with check (true);
 create policy "Anyone can update student points"
 on public.student_points for update
 using (true);
+
+----
+
+-- Allow authenticated users (staff/admin) to insert and update bins
+grant insert, update on public.bins to authenticated;
+
+-- Allow admin to manage bins
+create policy "Authenticated users can insert bins"
+on public.bins for insert
+to authenticated
+with check (true);
+
+create policy "Authenticated users can update bins"
+on public.bins for update
+to authenticated
+using (true);
