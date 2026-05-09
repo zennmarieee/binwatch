@@ -44,6 +44,23 @@ export default async function ReportPage({
     );
   }
 
+  // After fetching the bin, check cooldown
+    if (bin.status === "resolved" && bin.resolved_at) {
+    const resolvedAt = new Date(bin.resolved_at).getTime();
+    const now = Date.now();
+    const cooldownMs = 15 * 60 * 1000; // 15 minutes
+
+    if (now - resolvedAt > cooldownMs) {
+        // Cooldown passed — reset bin to no_active_report
+        await supabase
+        .from("bins")
+        .update({ status: "no_active_report", resolved_at: null })
+        .eq("id", bin.id);
+
+        bin.status = "no_active_report";
+    }
+    }
+
   // Fetch active report for this bin if any
   const { data: activeReport } = await supabase
     .from("reports")
@@ -51,6 +68,7 @@ export default async function ReportPage({
     .eq("bin_id", binId)
     .in("status", ["pending", "in_progress"])
     .single();
+
 
   return (
     <ReportClient

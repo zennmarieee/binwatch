@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-export default function AdminLoginPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,30 +16,57 @@ export default function AdminLoginPage() {
     setError("");
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
+
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
+    if (signInError || !data.user) {
       setError("Invalid email or password.");
       setLoading(false);
       return;
     }
 
-    router.push("/admin");
+    // Fetch role from profiles
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (!profile) {
+      setError("Account has no role assigned. Contact administrator.");
+      setLoading(false);
+      return;
+    }
+
+    // Redirect based on role
+    if (profile.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/staff");
+    }
+
     router.refresh();
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
       <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 shadow-lg">
-        <h1 className="text-2xl font-black text-[#102013]">BinWatch Admin</h1>
-        <p className="mt-1 text-sm text-[#4c616c]">
-          Sign in to access the dashboard.
-        </p>
 
-        <div className="mt-6 space-y-4">
+        {/* Logo */}
+        <div className="mb-6 text-center">
+          <p className="text-3xl">🗑️</p>
+          <h1 className="mt-2 text-2xl font-black text-[#102013]">
+            BinWatch
+          </h1>
+          <p className="mt-1 text-sm text-[#4c616c]">
+            Staff & Admin Portal
+          </p>
+        </div>
+
+        <div className="space-y-4">
           <div>
             <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-[#4c616c]">
               Email
@@ -49,7 +76,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-700/20"
-              placeholder="admin@binwatch.com"
+              placeholder="you@binwatch.com"
             />
           </div>
 
@@ -81,6 +108,13 @@ export default function AdminLoginPage() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </div>
+
+        <p className="mt-6 text-center text-xs text-[#4c616c]">
+          Students don't need to log in.{" "}
+          <a href="/" className="font-bold text-green-700 hover:underline">
+            Go to homepage →
+          </a>
+        </p>
       </div>
     </div>
   );
