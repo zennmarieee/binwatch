@@ -145,3 +145,8 @@ create policy "Authenticated users can update bins"
 on public.bins for update
 to authenticated
 using (true);
+
+----
+
+alter table public.bins
+add column qr_code text;
