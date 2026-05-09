@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AdminBinsClient from "./AdminBinsClient";
+import LogoutButton from "../components/LogoutButton";
 
 export default async function AdminBinsPage() {
   const supabase = await createClient();
@@ -31,6 +32,7 @@ export default async function AdminBinsPage() {
               {bins?.length ?? 0} bins registered
             </p>
           </div>
+          <LogoutButton />
         </div>
 
         <AdminBinsClient bins={bins ?? []} />
