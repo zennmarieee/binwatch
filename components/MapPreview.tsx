@@ -3,14 +3,33 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { bins } from "@/data/bins";
+import { getBins, type Bin } from "@/lib/bins";
 
 const USTP_CENTER: [number, number] = [8.4858347, 124.6564369];
+
+function getStatusColor(status: Bin["status"]): string {
+  switch (status) {
+    case "pending":     return "#d62828"; // red
+    case "in_progress": return "#f4a261"; // orange
+    case "resolved":    return "#2a9d8f"; // teal
+    default:            return "#4caf50"; // green — no_active_report
+  }
+}
+
+function getStatusLabel(status: Bin["status"]): string {
+  switch (status) {
+    case "no_active_report": return "All clear";
+    case "pending":          return "Reported — awaiting staff";
+    case "in_progress":      return "Being handled";
+    case "resolved":         return "Recently resolved";
+  }
+}
 
 function createBinIcon(fillColor: string) {
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-      <path d="M22 12h20l2 6H20l2-6Zm-4 8h28l-3 30c-.3 3-2.8 5-5.8 5H27.8c-3 0-5.5-2-5.8-5L18 20Zm8 7a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Z" fill="${fillColor}" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M22 12h20l2 6H20l2-6Zm-4 8h28l-3 30c-.3 3-2.8 5-5.8 5H27.8c-3 0-5.5-2-5.8-5L18 20Zm8 7a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Z" 
+        fill="${fillColor}" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
     </svg>`;
 
   return new L.Icon({
@@ -26,65 +45,53 @@ export default function MapPreview() {
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) {
-      return;
-    }
+    if (!mapContainerRef.current || mapRef.current) return;
 
-    try {
-      const bounds: L.LatLngBoundsExpression = [
-        [8.48, 124.65],
-        [8.491, 124.662],
-      ];
-      const container = mapContainerRef.current;
+    const bounds: L.LatLngBoundsExpression = [
+      [8.48, 124.65],
+      [8.491, 124.662],
+    ];
 
-      const map = L.map(container, {
-        center: USTP_CENTER,
-        zoom: 17,
-        minZoom: 16,
+    const map = L.map(mapContainerRef.current, {
+      center: USTP_CENTER,
+      zoom: 17,
+      minZoom: 16,
+      maxZoom: 19,
+      zoomSnap: 0.5,
+      zoomDelta: 0.5,
+      maxBounds: bounds,
+      maxBoundsViscosity: 1.0,
+    });
+
+    mapRef.current = map;
+
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      {
+        attribution: "&copy; OpenStreetMap & CARTO",
         maxZoom: 19,
-        zoomSnap: 0.5,
-        zoomDelta: 0.5,
-        maxBounds: bounds,
-        maxBoundsViscosity: 1.0,
-      });
+      }
+    ).addTo(map);
 
-      mapRef.current = map;
+    setTimeout(() => map.invalidateSize(), 100);
 
-      // Add tile layer (OSM)
-      // L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      //   attribution: "&copy; OpenStreetMap contributors",
-      //   maxZoom: 19,
-      // }).addTo(map);
-
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-          attribution: "&copy; OpenStreetMap & CARTO",
-          maxZoom: 19,
-        },
-      ).addTo(map);
-
-      // Invalidate size to render properly
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 100);
-
-      // Create icons
-      const greenIcon = createBinIcon("#2a9d8f");
-      const redIcon = createBinIcon("#d62828");
-
-      // Add bin markers from bins.ts
+    // Fetch bins from Supabase and add markers
+    getBins().then((bins) => {
       bins.forEach((bin) => {
-        const icon = bin.status === "overflow" ? redIcon : greenIcon;
+        const color = getStatusColor(bin.status);
+        const icon = createBinIcon(color);
 
-        L.marker([bin.lat, bin.lng], { icon }).addTo(map).bindPopup(`
-            <b>${bin.name}</b><br/>
-            Status: ${bin.status}
+        L.marker([bin.lat, bin.lng], { icon })
+          .addTo(map)
+          .bindPopup(`
+            <div style="min-width:160px">
+              <p style="font-weight:700;margin-bottom:4px">${bin.name}</p>
+              <p style="font-size:12px;color:#555;margin-bottom:2px">${bin.location_name}</p>
+              <p style="font-size:12px;font-weight:600;color:${color}">${getStatusLabel(bin.status)}</p>
+            </div>
           `);
       });
-    } catch (error) {
-      console.error("MapPreview Error:", error);
-    }
+    });
 
     return () => {
       if (mapRef.current) {
@@ -108,12 +115,20 @@ export default function MapPreview() {
         </p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-red-600 ring-2 ring-red-100" />
-            <span className="font-medium">Overflow bin</span>
+            <span className="h-3 w-3 rounded-full bg-[#4caf50] ring-2 ring-green-100" />
+            <span className="font-medium">All clear</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-teal-600 ring-2 ring-teal-100" />
-            <span className="font-medium">Available bin</span>
+            <span className="h-3 w-3 rounded-full bg-[#d62828] ring-2 ring-red-100" />
+            <span className="font-medium">Reported — awaiting staff</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-[#f4a261] ring-2 ring-orange-100" />
+            <span className="font-medium">Being handled</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-[#2a9d8f] ring-2 ring-teal-100" />
+            <span className="font-medium">Recently resolved</span>
           </div>
         </div>
       </div>
