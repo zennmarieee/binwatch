@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Trash2,
 } from "lucide-react";
+import CampusStats from "../components/CampusStats";
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
 import PublicStudentLookup from "../components/PublicStudentLookup";
@@ -83,35 +84,14 @@ export default function Home() {
 
         {/* Public Info */}
         <section className="surface-card rounded-3xl p-8">
-          <p className="text-sm font-bold uppercase tracking-widest text-green-700">
-            Campus stats
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
-            Public campus overview
-          </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {homepageContent.campusStats.map((stat, index) => {
-              const Icon = statIcons[index] ?? ClipboardList;
-
-              return (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-black/5 bg-[#f3f6f3] p-4"
-                >
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
-                    <Icon
-                      className="mr-1 inline-block h-3.5 w-3.5"
-                      aria-hidden="true"
-                    />
-                    {stat.label}
-                  </p>
-                  <p className="mt-2 text-2xl font-black text-green-700">
-                    {stat.value}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+            <p className="text-sm font-bold uppercase tracking-widest text-green-700">
+              Campus stats
+            </p>
+            <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
+              Public campus overview
+            </h2>
+            <CampusStats />
+      
         </section>
 
         {/* Map Preview */}

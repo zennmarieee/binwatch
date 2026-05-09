@@ -1,38 +1,17 @@
+// ============================================================
+// MOCK DATA — Development Reference Only
+// This file is no longer used by the map or any live feature.
+// Real bin data lives in Supabase → public.bins
+// ============================================================
+
 export interface Bin {
-  id: number;
+  id: string;
   name: string;
+  location_name: string;
   lat: number;
   lng: number;
-  status: "overflow" | "available";
+  status: "no_active_report" | "pending" | "in_progress" | "resolved";
+  is_active: boolean;
+  resolved_at: string | null;
+  created_at: string;
 }
-
-export const bins: Bin[] = [
-  {
-    id: 1,
-    name: "Engineering Building Bin",
-    lat: 8.4859,
-    lng: 124.657,
-    status: "overflow",
-  },
-  {
-    id: 2,
-    name: "Library Bin",
-    lat: 8.4865,
-    lng: 124.6558,
-    status: "overflow",
-  },
-  {
-    id: 3,
-    name: "Canteen Bin",
-    lat: 8.4849,
-    lng: 124.6562,
-    status: "overflow",
-  },
-  {
-    id: 4,
-    name: "Senior High Bin",
-    lat: 8.4861381,
-    lng: 124.6570198,
-    status: "overflow",
-  },
-];

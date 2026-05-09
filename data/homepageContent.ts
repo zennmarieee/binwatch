@@ -38,10 +38,5 @@ export const homepageContent = {
       { label: "Science Annex Overflow", value: "+25" },
       { label: "Weekly Participation Bonus", value: "+200" },
     ],
-  },
-  campusStats: [
-    { label: "Reports today", value: "24" },
-    { label: "Active bins", value: "8" },
-    { label: "Resolve rate", value: "96%" },
-  ],
+  }
 } as const;
