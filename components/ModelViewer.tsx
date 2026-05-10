@@ -3,10 +3,10 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 
-function BinModel(props: any) {
+function BinModel() {
   // Load the GLB model from the public directory
   const { scene } = useGLTF("/bin.glb");
-  return <primitive object={scene} {...props} />;
+  return <primitive object={scene} />;
 }
 
 export default function ModelViewer() {
@@ -23,5 +23,5 @@ export default function ModelViewer() {
 }
 
 // Required for GLTF loader
-// @ts-ignore
+// @ts-expect-error ignore: drei types may not include preload signature
 useGLTF.preload("/bin.glb");

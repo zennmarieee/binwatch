@@ -1,16 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  ArrowUp,
-  ClipboardList,
-  Gauge,
-  MapPinned,
-  QrCode,
-  Send,
-  ShieldCheck,
-  Trash2,
-} from "lucide-react";
+import { ArrowUp, MapPinned, QrCode, Send, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import CampusStats from "../components/CampusStats";
 import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
@@ -24,7 +16,6 @@ const MapPreview = dynamic(() => import("../components/MapPreview"), {
 
 export default function Home() {
   const howItWorksIcons = [QrCode, Send, ShieldCheck] as const;
-  const statIcons = [ClipboardList, Trash2, Gauge] as const;
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#f7faf7] text-[#191c1d]">
@@ -104,12 +95,12 @@ export default function Home() {
               />
               Map preview
             </p>
-            <a
+            <Link
               href="/map"
               className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white transition-colors hover:bg-white/30"
             >
               Full map →
-            </a>
+            </Link>
           </div>
 
           <h2 className="mt-2 text-2xl font-extrabold">Public map preview</h2>

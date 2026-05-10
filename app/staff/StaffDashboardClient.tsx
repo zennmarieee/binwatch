@@ -30,20 +30,24 @@ interface Props {
 
 function conditionLabel(condition: string) {
   switch (condition) {
-    case "overflowing": return { label: "Overflowing", color: "bg-red-100 text-red-700" };
-    case "almost_full": return { label: "Almost Full", color: "bg-orange-100 text-orange-700" };
-    case "damaged":     return { label: "Damaged",     color: "bg-yellow-100 text-yellow-700" };
-    default:            return { label: condition,      color: "bg-gray-100 text-gray-700" };
+    case "overflowing":
+      return { label: "Overflowing", color: "bg-red-100 text-red-700" };
+    case "almost_full":
+      return { label: "Almost Full", color: "bg-orange-100 text-orange-700" };
+    case "damaged":
+      return { label: "Damaged", color: "bg-yellow-100 text-yellow-700" };
+    default:
+      return { label: condition, color: "bg-gray-100 text-gray-700" };
   }
 }
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1)  return "just now";
+  if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24)  return `${hrs}h ago`;
+  if (hrs < 24) return `${hrs}h ago`;
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
@@ -53,7 +57,7 @@ export default function StaffDashboardClient({
 }: Props) {
   const router = useRouter();
   const supabase = createClient();
-  const [reports, setReports] = useState(initialReports);
+  const [reports] = useState(initialReports);
   const [loading, setLoading] = useState<string | null>(null);
 
   // Auto-refresh every 15 seconds
@@ -63,10 +67,6 @@ export default function StaffDashboardClient({
     }, 15000);
     return () => clearInterval(interval);
   }, [router]);
-
-  useEffect(() => {
-    setReports(initialReports);
-  }, [initialReports]);
 
   async function handleClaim(reportId: string, binId: string) {
     setLoading(reportId);
@@ -162,14 +162,18 @@ export default function StaffDashboardClient({
                   <h2 className="font-extrabold text-[#191c1d]">
                     {report.bins.name}
                   </h2>
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${color}`}>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${color}`}
+                  >
                     {label}
                   </span>
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-                    report.status === "pending"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-orange-100 text-orange-700"
-                  }`}>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${
+                      report.status === "pending"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-orange-100 text-orange-700"
+                    }`}
+                  >
                     {report.status === "pending" ? "Pending" : "In Progress"}
                   </span>
                 </div>

@@ -49,7 +49,8 @@ export async function GET() {
     .select("bin_id, bins(name)");
 
   const binCounts: Record<string, { name: string; count: number }> = {};
-  allReports?.forEach((r: any) => {
+  type RawReport = { bin_id: string; bins?: { name?: string } | null };
+  allReports?.forEach((r: RawReport) => {
     if (!binCounts[r.bin_id]) {
       binCounts[r.bin_id] = { name: r.bins?.name ?? "Unknown", count: 0 };
     }

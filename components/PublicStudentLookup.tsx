@@ -65,14 +65,23 @@ export default function PublicStudentLookup() {
       .order("created_at", { ascending: false })
       .limit(5);
 
-    const recentReports: RecentReport[] = (reportsData ?? []).map((r: any) => ({
-      id: r.id.slice(0, 8).toUpperCase(),
-      title: r.bins?.name
-        ? `${r.bins.name} — ${r.condition.replace(/_/g, " ")}`
-        : `Report — ${r.condition.replace(/_/g, " ")}`,
-      points: 50,
-      created_at: r.created_at,
-    }));
+    type RawReport = {
+      id: string;
+      condition: string;
+      created_at: string;
+      bins?: { name?: string } | null;
+    };
+
+    const recentReports: RecentReport[] = (reportsData ?? []).map(
+      (r: RawReport) => ({
+        id: r.id.slice(0, 8).toUpperCase(),
+        title: r.bins?.name
+          ? `${r.bins.name} — ${r.condition.replace(/_/g, " ")}`
+          : `Report — ${r.condition.replace(/_/g, " ")}`,
+        points: 50,
+        created_at: r.created_at,
+      }),
+    );
 
     setResult({
       studentId: pointsData.student_id,
