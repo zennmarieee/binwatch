@@ -9,28 +9,40 @@ const USTP_CENTER: [number, number] = [8.4858347, 124.6564369];
 
 function getStatusColor(status: Bin["status"]): string {
   switch (status) {
-    case "pending":      return "#d62828";
-    case "in_progress":  return "#f4a261";
-    case "resolved":     return "#2a9d8f";
-    default:             return "#4caf50";
+    case "pending":
+      return "#d62828";
+    case "in_progress":
+      return "#f4a261";
+    case "resolved":
+      return "#2a9d8f";
+    default:
+      return "#4caf50";
   }
 }
 
 function getStatusLabel(status: Bin["status"]): string {
   switch (status) {
-    case "no_active_report": return "All clear";
-    case "pending":          return "Reported — awaiting staff";
-    case "in_progress":      return "Being handled";
-    case "resolved":         return "Recently resolved";
+    case "no_active_report":
+      return "All clear";
+    case "pending":
+      return "Reported — awaiting staff";
+    case "in_progress":
+      return "Being handled";
+    case "resolved":
+      return "Recently resolved";
   }
 }
 
 function getStatusBadgeClass(status: Bin["status"]): string {
   switch (status) {
-    case "pending":          return "bg-red-100 text-red-700";
-    case "in_progress":      return "bg-orange-100 text-orange-700";
-    case "resolved":         return "bg-teal-100 text-teal-700";
-    default:                 return "bg-green-100 text-green-700";
+    case "pending":
+      return "bg-red-100 text-red-700";
+    case "in_progress":
+      return "bg-orange-100 text-orange-700";
+    case "resolved":
+      return "bg-teal-100 text-teal-700";
+    default:
+      return "bg-green-100 text-green-700";
   }
 }
 
@@ -78,7 +90,8 @@ export default function PublicMapClient() {
 
       const marker = L.marker([bin.lat, bin.lng], { icon })
         .addTo(mapRef.current!)
-        .bindPopup(`
+        .bindPopup(
+          `
           <div style="min-width:180px;font-family:sans-serif">
             <p style="font-weight:800;font-size:14px;margin-bottom:4px;color:#102013">
               ${bin.name}
@@ -97,7 +110,8 @@ export default function PublicMapClient() {
               ${getStatusLabel(bin.status)}
             </span>
           </div>
-        `)
+        `,
+        )
         .on("click", () => setSelectedBin(bin));
 
       markersRef.current.push(marker);
@@ -129,10 +143,13 @@ export default function PublicMapClient() {
       {
         attribution: "&copy; OpenStreetMap & CARTO",
         maxZoom: 19,
-      }
+      },
     ).addTo(map);
 
     setTimeout(() => map.invalidateSize(), 100);
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 600);
 
     // Initial load
     loadBins().then(renderMarkers);
@@ -163,12 +180,12 @@ export default function PublicMapClient() {
 
   return (
     <div className="flex h-[calc(100vh-65px)] flex-col lg:flex-row">
-
       {/* Map */}
       <div className="relative flex-1">
         <div
           ref={mapContainerRef}
-          className="h-full w-full"
+          className="w-full"
+          style={{ height: "60vh", minHeight: "350px" }}
         />
 
         {/* Last updated badge */}
@@ -179,7 +196,6 @@ export default function PublicMapClient() {
 
       {/* Sidebar */}
       <div className="w-full overflow-y-auto border-t border-black/5 bg-white lg:w-80 lg:border-l lg:border-t-0">
-
         {/* Stats */}
         <div className="border-b border-black/5 p-4">
           <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#4c616c]">
@@ -200,7 +216,9 @@ export default function PublicMapClient() {
             </div>
             <div className="rounded-2xl bg-orange-50 p-3">
               <p className="text-xs text-orange-700">In Progress</p>
-              <p className="text-xl font-black text-orange-700">{stats.inProgress}</p>
+              <p className="text-xl font-black text-orange-700">
+                {stats.inProgress}
+              </p>
             </div>
           </div>
         </div>
@@ -267,9 +285,9 @@ export default function PublicMapClient() {
                     {bin.status === "no_active_report"
                       ? "Clear"
                       : bin.status === "in_progress"
-                      ? "Active"
-                      : bin.status.charAt(0).toUpperCase() +
-                        bin.status.slice(1)}
+                        ? "Active"
+                        : bin.status.charAt(0).toUpperCase() +
+                          bin.status.slice(1)}
                   </span>
                 </div>
               </button>

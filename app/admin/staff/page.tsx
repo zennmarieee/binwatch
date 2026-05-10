@@ -3,13 +3,22 @@ import { redirect } from "next/navigation";
 import AdminStaffClient from "./AdminStaffClient";
 import LogoutButton from "../components/LogoutButton";
 
+
 export default async function AdminStaffPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
-  // Fetch all staff and admin accounts
+  // Verify this user is actually admin
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") redirect("/staff");
+
   const { data: profiles } = await supabase
     .from("profiles")
     .select("*")
@@ -20,7 +29,7 @@ export default async function AdminStaffPage() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between">
           <div>
-            <a
+          <a  
               href="/admin"
               className="text-sm font-bold text-green-700 hover:underline"
             >
