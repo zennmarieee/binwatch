@@ -25,18 +25,4 @@ export const homepageContent = {
       description: "Staff reviews it and updates the bin.",
     },
   ],
-  publicLookup: {
-    title: "Check a Student ID",
-    description: "See points and recent reports without logging in.",
-    metrics: [
-      { label: "Points", value: "2,480" },
-      { label: "Reports", value: "31" },
-      { label: "Rank", value: "#142" },
-    ],
-    history: [
-      { label: "North Library Bin Report", value: "+50" },
-      { label: "Science Annex Overflow", value: "+25" },
-      { label: "Weekly Participation Bonus", value: "+200" },
-    ],
-  }
 } as const;

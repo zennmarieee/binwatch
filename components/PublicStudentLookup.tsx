@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   Award,
   Clock3,
@@ -8,34 +8,92 @@ import {
   Search,
   ShieldCheck,
   TrendingUp,
-  UserRound,
 } from "lucide-react";
-import { homepageContent } from "../data/homepageContent";
-import { publicStudentLookupData } from "../data/publicStudentLookup";
+import { createClient } from "@/lib/supabase/client";
+
+interface RecentReport {
+  id: string;
+  title: string;
+  points: number;
+  created_at: string;
+}
+
+interface StudentResult {
+  studentId: string;
+  totalPoints: number;
+  reportCount: number;
+  lastActivity: string;
+  recentReports: RecentReport[];
+}
 
 export default function PublicStudentLookup() {
+  const supabase = createClient();
   const [studentQuery, setStudentQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
+  const [result, setResult] = useState<StudentResult | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const lookupResult = useMemo(() => {
-    const normalizedQuery = submittedQuery.trim().toLowerCase();
+  async function handleLookup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = studentQuery.trim();
+    if (!query) return;
 
-    if (!normalizedQuery) {
-      return null;
+    setLoading(true);
+    setNotFound(false);
+    setResult(null);
+    setSubmittedQuery(query);
+
+    // Fetch student points
+    const { data: pointsData } = await supabase
+      .from("student_points")
+      .select("*")
+      .eq("student_id", query)
+      .single();
+
+    if (!pointsData) {
+      setNotFound(true);
+      setLoading(false);
+      return;
     }
 
-    return publicStudentLookupData.find((student) => {
-      return (
-        student.studentId.toLowerCase() === normalizedQuery ||
-        student.name.toLowerCase().includes(normalizedQuery)
-      );
-    });
-  }, [submittedQuery]);
+    // Fetch recent reports for this student
+    const { data: reportsData } = await supabase
+      .from("reports")
+      .select("id, condition, created_at, bin_id, bins(name)")
+      .eq("student_id", query)
+      .order("created_at", { ascending: false })
+      .limit(5);
 
-  const handleLookup = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmittedQuery(studentQuery);
-  };
+    const recentReports: RecentReport[] = (reportsData ?? []).map((r: any) => ({
+      id: r.id.slice(0, 8).toUpperCase(),
+      title: r.bins?.name
+        ? `${r.bins.name} — ${r.condition.replace(/_/g, " ")}`
+        : `Report — ${r.condition.replace(/_/g, " ")}`,
+      points: 50,
+      created_at: r.created_at,
+    }));
+
+    setResult({
+      studentId: pointsData.student_id,
+      totalPoints: pointsData.total_points,
+      reportCount: pointsData.report_count,
+      lastActivity: pointsData.last_activity,
+      recentReports,
+    });
+
+    setLoading(false);
+  }
+
+  function timeAgo(dateStr: string) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)  return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)  return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
 
   return (
     <section id="lookup" className="surface-card rounded-3xl p-8 sm:p-10">
@@ -45,14 +103,15 @@ export default function PublicStudentLookup() {
             Public student lookup
           </p>
           <h2 className="mt-2 text-3xl font-extrabold text-[#191c1d]">
-            {homepageContent.publicLookup.title}
+            Check Your Points
           </h2>
           <p className="mt-3 text-sm leading-6 text-[#4c616c]">
-            {homepageContent.publicLookup.description}
+            Enter your Student ID to see your points and recent report history.
           </p>
         </div>
 
         <div className="lg:col-span-7 space-y-4">
+          {/* Search Form */}
           <form
             className="flex flex-col gap-3 rounded-3xl border border-black/5 bg-[#f3f6f3] p-4 sm:flex-row sm:items-center"
             onSubmit={handleLookup}
@@ -64,83 +123,92 @@ export default function PublicStudentLookup() {
               />
               <input
                 className="w-full rounded-full border border-black/5 bg-white py-4 pl-11 pr-5 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
-                placeholder="Enter Student ID (e.g. STU-2024)"
+                placeholder="Enter Student ID (e.g. STU-2024-0142)"
                 type="text"
                 value={studentQuery}
-                onChange={(event) => setStudentQuery(event.target.value)}
+                onChange={(e) => setStudentQuery(e.target.value)}
               />
             </div>
             <button
-              className="inline-flex items-center justify-center rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e]"
+              className="inline-flex items-center justify-center rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e] disabled:opacity-50"
               type="submit"
+              disabled={loading}
             >
               <Search className="mr-2 h-4 w-4" aria-hidden="true" />
-              Lookup
+              {loading ? "..." : "Lookup"}
             </button>
           </form>
 
+          {/* Result Area */}
           <div className="rounded-3xl border border-dashed border-green-700/30 bg-[#f7faf7] p-5">
-            {!submittedQuery ? (
+
+            {/* Default state */}
+            {!submittedQuery && (
               <>
                 <p className="text-sm font-bold text-[#191c1d]">
                   No result yet
                 </p>
                 <p className="mt-2 text-sm text-[#4c616c]">
-                  Search a Student ID or student name to preview the public
-                  lookup layout.
+                  Enter your Student ID and click Lookup to see your points
+                  and contribution history.
                 </p>
               </>
-            ) : lookupResult ? (
-              <div className="space-y-5">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-green-700">
-                      <ShieldCheck
-                        className="mr-1 inline-block h-3.5 w-3.5"
-                        aria-hidden="true"
-                      />
-                      Match found
-                    </p>
-                    <h3 className="mt-2 text-2xl font-black text-[#191c1d]">
-                      {lookupResult.name}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#4c616c]">
-                      {lookupResult.studentId} · {lookupResult.course}
-                    </p>
-                    <p className="mt-1 text-sm text-[#4c616c]">
-                      {lookupResult.yearLevel} · {lookupResult.campus}
-                    </p>
-                  </div>
+            )}
 
-                  <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm">
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
-                      <UserRound
-                        className="mr-1 inline-block h-3.5 w-3.5"
-                        aria-hidden="true"
-                      />
-                      Status
-                    </p>
-                    <p className="mt-1 text-sm font-bold text-green-700">
-                      {lookupResult.status === "active" ? "Active" : "Paused"}
-                    </p>
-                  </div>
+            {/* Loading */}
+            {loading && (
+              <div className="space-y-3">
+                <div className="h-4 w-32 animate-pulse rounded-full bg-gray-200" />
+                <div className="h-4 w-48 animate-pulse rounded-full bg-gray-200" />
+                <div className="h-4 w-40 animate-pulse rounded-full bg-gray-200" />
+              </div>
+            )}
+
+            {/* Not found */}
+            {!loading && notFound && (
+              <>
+                <p className="text-sm font-bold text-[#191c1d]">
+                  No student found
+                </p>
+                <p className="mt-2 text-sm text-[#4c616c]">
+                  No record found for "{submittedQuery}". Make sure you've
+                  submitted at least one report with your Student ID.
+                </p>
+              </>
+            )}
+
+            {/* Result */}
+            {!loading && result && (
+              <div className="space-y-5">
+
+                {/* Header */}
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-green-700">
+                    <ShieldCheck
+                      className="mr-1 inline-block h-3.5 w-3.5"
+                      aria-hidden="true"
+                    />
+                    Match found
+                  </p>
+                  <h3 className="mt-2 text-2xl font-black text-[#191c1d]">
+                    {result.studentId}
+                  </h3>
+                  <p className="mt-1 text-sm text-[#4c616c]">
+                    Last active {timeAgo(result.lastActivity)}
+                  </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
+                {/* Metrics */}
+                <div className="grid gap-3 sm:grid-cols-2">
                   {[
                     {
-                      label: "Points",
-                      value: lookupResult.points.toLocaleString(),
+                      label: "Total Points",
+                      value: result.totalPoints.toLocaleString(),
                       icon: Award,
                     },
                     {
                       label: "Reports",
-                      value: lookupResult.reports.toString(),
-                      icon: FileText,
-                    },
-                    {
-                      label: "Rank",
-                      value: lookupResult.rank,
+                      value: result.reportCount.toString(),
                       icon: TrendingUp,
                     },
                   ].map((metric) => (
@@ -162,56 +230,50 @@ export default function PublicStudentLookup() {
                   ))}
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold text-[#191c1d]">
-                      <FileText
-                        className="mr-1 inline-block h-4 w-4"
-                        aria-hidden="true"
-                      />
-                      Recent reports
-                    </p>
-                    <p className="text-xs text-[#4c616c]">
-                      <Clock3
-                        className="mr-1 inline-block h-3.5 w-3.5"
-                        aria-hidden="true"
-                      />
-                      Last seen {lookupResult.lastSeen}
-                    </p>
-                  </div>
+                {/* Recent Reports */}
+                {result.recentReports.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-bold text-[#191c1d]">
+                        <FileText
+                          className="mr-1 inline-block h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        Recent reports
+                      </p>
+                      <p className="text-xs text-[#4c616c]">
+                        <Clock3
+                          className="mr-1 inline-block h-3.5 w-3.5"
+                          aria-hidden="true"
+                        />
+                        Last active {timeAgo(result.lastActivity)}
+                      </p>
+                    </div>
 
-                  <div className="mt-3 space-y-2">
-                    {lookupResult.recentReports.map((report) => (
-                      <div
-                        key={report.id}
-                        className="flex items-center justify-between rounded-2xl bg-white px-4 py-3"
-                      >
-                        <div>
-                          <p className="text-sm font-semibold text-[#191c1d]">
-                            {report.title}
-                          </p>
-                          <p className="text-xs text-[#4c616c]">
-                            Reference {report.id}
-                          </p>
+                    <div className="mt-3 space-y-2">
+                      {result.recentReports.map((report) => (
+                        <div
+                          key={report.id}
+                          className="flex items-center justify-between rounded-2xl bg-white px-4 py-3"
+                        >
+                          <div>
+                            <p className="text-sm font-semibold text-[#191c1d]">
+                              {report.title}
+                            </p>
+                            <p className="text-xs text-[#4c616c]">
+                              Ref: {report.id} ·{" "}
+                              {timeAgo(report.created_at)}
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-[#d9f6d4] px-3 py-1 text-xs font-bold text-[#0f4a16]">
+                            +{report.points}
+                          </span>
                         </div>
-                        <span className="rounded-full bg-[#d9f6d4] px-3 py-1 text-xs font-bold text-[#0f4a16]">
-                          +{report.points}
-                        </span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
-            ) : (
-              <>
-                <p className="text-sm font-bold text-[#191c1d]">
-                  No student found
-                </p>
-                <p className="mt-2 text-sm text-[#4c616c]">
-                  No mock record matched “{submittedQuery}”. Try STU-2024-0142
-                  or Alyssa.
-                </p>
-              </>
             )}
           </div>
         </div>

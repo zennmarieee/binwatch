@@ -1,19 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import LogoutButton from "./components/LogoutButton";
+import AdminAnalytics from "./components/AdminAnalytics";
 
 export default async function AdminPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/login");
 
   return (
     <div className="min-h-screen bg-[#f7faf7] p-8">
       <div className="mx-auto max-w-5xl">
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -29,20 +28,22 @@ export default async function AdminPage() {
 
         {/* Nav Cards */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Link
+          <a
             href="/admin/bins"
             className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             <p className="text-xs font-bold uppercase tracking-widest text-green-700">
               Manage
             </p>
-            <h2 className="mt-2 text-xl font-extrabold text-[#191c1d]">Bins</h2>
+            <h2 className="mt-2 text-xl font-extrabold text-[#191c1d]">
+              Bins
+            </h2>
             <p className="mt-1 text-sm text-[#4c616c]">
               Register, view, and deactivate campus bins.
             </p>
-          </Link>
+          </a>
 
-          <Link
+          <a
             href="/admin/staff"
             className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
@@ -55,8 +56,22 @@ export default async function AdminPage() {
             <p className="mt-1 text-sm text-[#4c616c]">
               Create and manage staff accounts.
             </p>
-          </Link>
+          </a>
         </div>
+
+        {/* Analytics Section */}
+        <div className="mt-10">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-extrabold text-[#102013]">
+              System Analytics
+            </h2>
+            <p className="text-xs text-[#4c616c]">
+              Refreshes every 30 seconds
+            </p>
+          </div>
+          <AdminAnalytics />
+        </div>
+
       </div>
     </div>
   );
