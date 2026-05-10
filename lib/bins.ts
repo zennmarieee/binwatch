@@ -8,6 +8,7 @@ export interface Bin {
   lng: number;
   status: "no_active_report" | "pending" | "in_progress" | "resolved";
   is_active: boolean;
+  qr_code: string | null;
   resolved_at: string | null;
   created_at: string;
 }
