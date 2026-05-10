@@ -20,11 +20,14 @@ interface Report {
   status: string;
   assigned_to: string | null;
   created_at: string;
+  resolved_at: string | null;
   bins: Bin;
+  profiles: { full_name: string | null } | null;
 }
 
 interface Props {
   reports: Report[];
+  resolvedReports: Report[];
   currentUserId: string;
 }
 
@@ -53,11 +56,12 @@ function timeAgo(dateStr: string) {
 
 export default function StaffDashboardClient({
   reports: initialReports,
+  resolvedReports,
   currentUserId,
 }: Props) {
   const router = useRouter();
   const supabase = createClient();
-  const [reports] = useState(initialReports);
+  const reports = initialReports;
   const [loading, setLoading] = useState<string | null>(null);
 
   // Auto-refresh every 15 seconds
@@ -125,106 +129,170 @@ export default function StaffDashboardClient({
     router.refresh();
   }
 
-  if (reports.length === 0) {
-    return (
-      <div className="mt-12 text-center">
-        <p className="text-4xl">✅</p>
-        <h2 className="mt-4 text-xl font-extrabold text-[#102013]">
-          All Clear
-        </h2>
-        <p className="mt-2 text-sm text-[#4c616c]">
-          No active reports right now. Dashboard refreshes every 15 seconds.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="mt-8 space-y-4">
-      {reports.map((report) => {
-        const { label, color } = conditionLabel(report.condition);
-        const isAssignedToMe = report.assigned_to === currentUserId;
-        const isAssignedToOther =
-          report.assigned_to && report.assigned_to !== currentUserId;
+    <div className="mt-8">
+      {reports.length === 0 ? (
+        <div className="text-center">
+          <p className="text-4xl">✅</p>
+          <h2 className="mt-4 text-xl font-extrabold text-[#102013]">
+            All Clear
+          </h2>
+          <p className="mt-2 text-sm text-[#4c616c]">
+            No active reports right now. Dashboard refreshes every 15 seconds.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {reports.map((report) => {
+            const { label, color } = conditionLabel(report.condition);
+            const isAssignedToMe = report.assigned_to === currentUserId;
+            const isAssignedToOther =
+              report.assigned_to && report.assigned_to !== currentUserId;
 
-        return (
-          <div
-            key={report.id}
-            className={`rounded-3xl border bg-white p-6 shadow-sm ${
-              report.status === "in_progress"
-                ? "border-orange-200"
-                : "border-black/5"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-extrabold text-[#191c1d]">
-                    {report.bins.name}
-                  </h2>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-bold ${color}`}
-                  >
-                    {label}
-                  </span>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-bold ${
-                      report.status === "pending"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-orange-100 text-orange-700"
-                    }`}
-                  >
-                    {report.status === "pending" ? "Pending" : "In Progress"}
-                  </span>
+            return (
+              <div
+                key={report.id}
+                className={`rounded-3xl border bg-white p-6 shadow-sm ${
+                  report.status === "in_progress"
+                    ? "border-orange-200"
+                    : "border-black/5"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="font-extrabold text-[#191c1d]">
+                        {report.bins.name}
+                      </h2>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${color}`}
+                      >
+                        {label}
+                      </span>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${
+                          report.status === "pending"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-orange-100 text-orange-700"
+                        }`}
+                      >
+                        {report.status === "pending"
+                          ? "Pending"
+                          : "In Progress"}
+                      </span>
+                    </div>
+
+                    <p className="mt-1 text-sm text-[#4c616c]">
+                      {report.bins.location_name}
+                    </p>
+                    <p className="mt-1 text-xs text-[#4c616c]">
+                      Reported {timeAgo(report.created_at)}
+                      {report.student_id && ` · by ${report.student_id}`}
+                    </p>
+
+                    {isAssignedToOther && (
+                      <p className="mt-2 text-xs font-bold text-orange-600">
+                        Claimed by{" "}
+                        {report.profiles?.full_name ?? "another staff member"}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2">
+                    {report.status === "pending" && (
+                      <button
+                        onClick={() => handleClaim(report.id, report.bin_id)}
+                        disabled={loading === report.id}
+                        className="rounded-xl bg-[#176d25] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#12581e] disabled:opacity-50"
+                      >
+                        {loading === report.id ? "..." : "Claim"}
+                      </button>
+                    )}
+
+                    {report.status === "in_progress" && isAssignedToMe && (
+                      <button
+                        onClick={() => handleResolve(report.id, report.bin_id)}
+                        disabled={loading === report.id}
+                        className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
+                      >
+                        {loading === report.id ? "..." : "Resolve"}
+                      </button>
+                    )}
+
+                    {report.status === "in_progress" && isAssignedToOther && (
+                      <span className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-400">
+                        Taken
+                      </span>
+                    )}
+                  </div>
                 </div>
-
-                <p className="mt-1 text-sm text-[#4c616c]">
-                  {report.bins.location_name}
-                </p>
-                <p className="mt-1 text-xs text-[#4c616c]">
-                  Reported {timeAgo(report.created_at)}
-                  {report.student_id && ` · by ${report.student_id}`}
-                </p>
-
-                {isAssignedToOther && (
-                  <p className="mt-2 text-xs font-bold text-orange-600">
-                    Claimed by another staff member
-                  </p>
-                )}
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              {/* Actions */}
-              <div className="flex flex-col gap-2">
-                {report.status === "pending" && (
-                  <button
-                    onClick={() => handleClaim(report.id, report.bin_id)}
-                    disabled={loading === report.id}
-                    className="rounded-xl bg-[#176d25] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#12581e] disabled:opacity-50"
-                  >
-                    {loading === report.id ? "..." : "Claim"}
-                  </button>
-                )}
+      {/* My History */}
+      <div className="mt-10">
+        <h2 className="text-xl font-extrabold text-[#102013]">My History</h2>
+        <p className="mt-1 text-sm text-[#4c616c]">
+          Your last 10 resolved reports
+        </p>
 
-                {report.status === "in_progress" && isAssignedToMe && (
-                  <button
-                    onClick={() => handleResolve(report.id, report.bin_id)}
-                    disabled={loading === report.id}
-                    className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
-                  >
-                    {loading === report.id ? "..." : "Resolve"}
-                  </button>
-                )}
-
-                {report.status === "in_progress" && isAssignedToOther && (
-                  <span className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-400">
-                    Taken
-                  </span>
-                )}
-              </div>
-            </div>
+        {resolvedReports.length === 0 ? (
+          <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-center">
+            <p className="text-sm text-[#4c616c]">No resolved reports yet.</p>
           </div>
-        );
-      })}
+        ) : (
+          <div className="mt-4 space-y-3">
+            {resolvedReports.map((report, i) => {
+              const { label, color } = conditionLabel(report.condition);
+              const duration = report.resolved_at
+                ? Math.round(
+                    (new Date(report.resolved_at).getTime() -
+                      new Date(report.created_at).getTime()) /
+                      60000,
+                  )
+                : null;
+
+              return (
+                <div
+                  key={report.id}
+                  className={`rounded-3xl border border-black/5 bg-white p-5 ${
+                    i % 2 === 0 ? "bg-white" : "bg-[#f9faf9]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-extrabold text-[#191c1d]">
+                          {report.bins.name}
+                        </h3>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-bold ${color}`}
+                        >
+                          {label}
+                        </span>
+                        <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-bold text-teal-700">
+                          Resolved
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-[#4c616c]">
+                        {report.bins.location_name}
+                      </p>
+                      <p className="mt-1 text-xs text-[#4c616c]">
+                        Reported {timeAgo(report.created_at)}
+                        {duration !== null && ` · resolved in ${duration}m`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

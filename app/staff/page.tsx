@@ -13,18 +13,37 @@ export default async function StaffDashboardPage() {
 
   const { data: reports } = await supabase
     .from("reports")
-    .select(`
-      *,
-      bins (
-        id,
-        name,
-        location_name,
-        lat,
-        lng
-      )
-    `)
+    .select(
+      `
+    *,
+    bins (
+      id,
+      name,
+      location_name,
+      lat,
+      lng
+    )
+  `,
+    )
     .in("status", ["pending", "in_progress"])
     .order("created_at", { ascending: true });
+
+  const { data: resolvedReports } = await supabase
+    .from("reports")
+    .select(
+      `
+    *,
+    bins (
+      id,
+      name,
+      location_name
+    )
+  `,
+    )
+    .eq("assigned_to", user.id)
+    .eq("status", "resolved")
+    .order("resolved_at", { ascending: false })
+    .limit(10);
 
   return (
     <div className="min-h-screen bg-[#f7faf7] p-8">
@@ -43,6 +62,7 @@ export default async function StaffDashboardPage() {
 
         <StaffDashboardClient
           reports={reports ?? []}
+          resolvedReports={resolvedReports ?? []}
           currentUserId={user.id}
         />
       </div>
