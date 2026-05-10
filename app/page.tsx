@@ -84,29 +84,39 @@ export default function Home() {
 
         {/* Public Info */}
         <section className="surface-card rounded-3xl p-8">
-            <p className="text-sm font-bold uppercase tracking-widest text-green-700">
-              Campus stats
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
-              Public campus overview
-            </h2>
-            <CampusStats />
-      
+          <p className="text-sm font-bold uppercase tracking-widest text-green-700">
+            Campus stats
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold text-[#191c1d]">
+            Public campus overview
+          </h2>
+          <CampusStats />
         </section>
 
         {/* Map Preview */}
         <section className="map-card rounded-3xl bg-linear-to-br from-[#0e5c88] to-[#0a83b0] p-8 text-[#e9f2ff]">
-          <p className="text-sm font-bold uppercase tracking-widest text-[#cee5ff]">
-            <MapPinned
-              className="mr-1 inline-block h-3.5 w-3.5"
-              aria-hidden="true"
-            />
-            Map preview
-          </p>
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-bold uppercase tracking-widest text-[#cee5ff]">
+              <MapPinned
+                className="mr-1 inline-block h-3.5 w-3.5"
+                aria-hidden="true"
+              />
+              Map preview
+            </p>
+            <a
+              href="/map"
+              className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white transition-colors hover:bg-white/30"
+            >
+              Full map →
+            </a>
+          </div>
+
           <h2 className="mt-2 text-2xl font-extrabold">Public map preview</h2>
           <p className="mt-3 text-sm leading-6 text-[#e9f2ff]/85">
-            Keep this small so the page stays light.
+            Live bin status across USTP campus.
           </p>
+
           <div className="mt-6 rounded-3xl bg-white/15 p-4 backdrop-blur-sm">
             <MapPreview />
           </div>
