@@ -81,6 +81,37 @@ export default function ReportClient({ bin, activeReport }: Props) {
     );
   }
 
+  // Bin is in cooldown (recently resolved, cooldown not yet passed)
+  if (bin.status === "resolved") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
+        <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
+          <p className="text-4xl">✅</p>
+          <h1 className="mt-4 text-xl font-extrabold text-[#102013]">
+            Recently Resolved
+          </h1>
+          <p className="mt-2 text-sm text-[#4c616c]">
+            This bin was recently serviced by our maintenance staff. Reporting
+            will be available again shortly.
+          </p>
+          <div className="mt-4 rounded-2xl bg-[#f3f6f3] px-4 py-3 text-left">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#4c616c]">
+              Bin
+            </p>
+            <p className="mt-1 font-bold text-[#191c1d]">{bin.name}</p>
+            <p className="text-sm text-[#4c616c]">{bin.location_name}</p>
+          </div>
+          <a
+            href="/"
+            className="mt-6 inline-block rounded-xl border border-[#176d25] px-6 py-3 font-bold text-[#176d25]"
+          >
+            Back to Home
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   // Submitted successfully
   if (submitted) {
     return (
@@ -135,14 +166,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
     setLoading(true);
 
     // Submit report
-    const { error: reportError } = await supabase
-      .from("reports")
-      .insert({
-        bin_id: bin.id,
-        condition,
-        student_id: studentId.trim() || null,
-        status: "pending",
-      });
+    const { error: reportError } = await supabase.from("reports").insert({
+      bin_id: bin.id,
+      condition,
+      student_id: studentId.trim() || null,
+      status: "pending",
+    });
 
     if (reportError) {
       setError("Failed to submit report. Please try again.");
@@ -151,9 +180,13 @@ export default function ReportClient({ bin, activeReport }: Props) {
     }
 
     // Update bin status to pending
+    // Update bin status to pending and clear resolved_at
     await supabase
       .from("bins")
-      .update({ status: "pending" })
+      .update({
+        status: "pending",
+        resolved_at: null, // ← clear this so cooldown resets
+      })
       .eq("id", bin.id);
 
     // Award points if student ID provided
@@ -176,14 +209,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
           })
           .eq("student_id", studentId.trim());
       } else {
-        await supabase
-          .from("student_points")
-          .insert({
-            student_id: studentId.trim(),
-            total_points: points,
-            report_count: 1,
-            last_activity: new Date().toISOString(),
-          });
+        await supabase.from("student_points").insert({
+          student_id: studentId.trim(),
+          total_points: points,
+          report_count: 1,
+          last_activity: new Date().toISOString(),
+        });
       }
 
       setPointsEarned(points);
@@ -203,16 +234,13 @@ export default function ReportClient({ bin, activeReport }: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4 py-8">
       <div className="w-full max-w-sm">
-
         {/* Header */}
         <div className="mb-6 text-center">
           <p className="text-4xl">🗑️</p>
           <h1 className="mt-3 text-2xl font-black text-[#102013]">
             Report This Bin
           </h1>
-          <p className="mt-1 text-sm font-bold text-[#4c616c]">
-            {bin.name}
-          </p>
+          <p className="mt-1 text-sm font-bold text-[#4c616c]">{bin.name}</p>
           <p className="text-xs text-[#4c616c]">{bin.location_name}</p>
         </div>
 

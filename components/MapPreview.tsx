@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getBins, type Bin } from "@/lib/bins";
@@ -9,10 +9,10 @@ const USTP_CENTER: [number, number] = [8.4858347, 124.6564369];
 
 function getStatusColor(status: Bin["status"]): string {
   switch (status) {
-    case "pending":     return "#d62828"; // red
-    case "in_progress": return "#f4a261"; // orange
-    case "resolved":    return "#2a9d8f"; // teal
-    default:            return "#4caf50"; // green — no_active_report
+    case "pending":      return "#d62828";
+    case "in_progress":  return "#f4a261";
+    case "resolved":     return "#2a9d8f";
+    default:             return "#4caf50";
   }
 }
 
@@ -28,7 +28,7 @@ function getStatusLabel(status: Bin["status"]): string {
 function createBinIcon(fillColor: string) {
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-      <path d="M22 12h20l2 6H20l2-6Zm-4 8h28l-3 30c-.3 3-2.8 5-5.8 5H27.8c-3 0-5.5-2-5.8-5L18 20Zm8 7a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Z" 
+      <path d="M22 12h20l2 6H20l2-6Zm-4 8h28l-3 30c-.3 3-2.8 5-5.8 5H27.8c-3 0-5.5-2-5.8-5L18 20Zm8 7a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Z"
         fill="${fillColor}" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
     </svg>`;
 
@@ -43,6 +43,36 @@ function createBinIcon(fillColor: string) {
 export default function MapPreview() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+
+  // Separate function to load and render markers
+  const loadMarkers = useCallback(async () => {
+    if (!mapRef.current) return;
+
+    const bins = await getBins();
+
+    // Remove existing markers
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    // Add updated markers
+    bins.forEach((bin) => {
+      const color = getStatusColor(bin.status);
+      const icon = createBinIcon(color);
+
+      const marker = L.marker([bin.lat, bin.lng], { icon })
+        .addTo(mapRef.current!)
+        .bindPopup(`
+          <div style="min-width:160px">
+            <p style="font-weight:700;margin-bottom:4px">${bin.name}</p>
+            <p style="font-size:12px;color:#555;margin-bottom:2px">${bin.location_name}</p>
+            <p style="font-size:12px;font-weight:600;color:${color}">${getStatusLabel(bin.status)}</p>
+          </div>
+        `);
+
+      markersRef.current.push(marker);
+    });
+  }, []);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -73,33 +103,24 @@ export default function MapPreview() {
       }
     ).addTo(map);
 
-    setTimeout(() => map.invalidateSize(), 100);
+    setTimeout(() => {
+      map.invalidateSize();
+      loadMarkers();
+    }, 100);
 
-    // Fetch bins from Supabase and add markers
-    getBins().then((bins) => {
-      bins.forEach((bin) => {
-        const color = getStatusColor(bin.status);
-        const icon = createBinIcon(color);
-
-        L.marker([bin.lat, bin.lng], { icon })
-          .addTo(map)
-          .bindPopup(`
-            <div style="min-width:160px">
-              <p style="font-weight:700;margin-bottom:4px">${bin.name}</p>
-              <p style="font-size:12px;color:#555;margin-bottom:2px">${bin.location_name}</p>
-              <p style="font-size:12px;font-weight:600;color:${color}">${getStatusLabel(bin.status)}</p>
-            </div>
-          `);
-      });
-    });
+    // Poll every 15 seconds
+    const interval = setInterval(() => {
+      loadMarkers();
+    }, 15000);
 
     return () => {
+      clearInterval(interval);
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [loadMarkers]);
 
   return (
     <div className="flex w-full flex-col gap-3">
