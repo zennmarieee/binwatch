@@ -23,5 +23,4 @@ export default function ModelViewer() {
 }
 
 // Required for GLTF loader
-// @ts-expect-error ignore: drei types may not include preload signature
 useGLTF.preload("/bin.glb");

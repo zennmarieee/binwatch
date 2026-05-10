@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { getBins, type Bin } from "@/lib/bins";
+import type { Bin } from "@/lib/bins";
 
 const USTP_CENTER: [number, number] = [8.4858347, 124.6564369];
 
@@ -46,7 +44,7 @@ function getStatusBadgeClass(status: Bin["status"]): string {
   }
 }
 
-function createBinIcon(fillColor: string) {
+function createBinIcon(L: any, fillColor: string) {
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
       <path d="M22 12h20l2 6H20l2-6Zm-4 8h28l-3 30c-.3 3-2.8 5-5.8 5H27.8c-3 0-5.5-2-5.8-5L18 20Zm8 7a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Zm8 0a2 2 0 0 0-2 2v12a2 2 0 1 0 4 0V29a2 2 0 0 0-2-2Z"
@@ -63,30 +61,32 @@ function createBinIcon(fillColor: string) {
 
 export default function PublicMapClient() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+  const mapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
   const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const LRef = useRef<any>(null);
 
   const loadBins = useCallback(async () => {
+    const { getBins } = await import("@/lib/bins");
     const data = await getBins();
     setBins(data);
     setLastUpdated(new Date());
     return data;
   }, []);
 
-  const renderMarkers = useCallback((data: Bin[]) => {
+  const renderMarkers = useCallback((data: Bin[], L: any) => {
     if (!mapRef.current) return;
 
     // Remove old markers
-    markersRef.current.forEach((m) => m.remove());
+    markersRef.current.forEach((m: any) => m.remove());
     markersRef.current = [];
 
     // Add new markers
     data.forEach((bin) => {
       const color = getStatusColor(bin.status);
-      const icon = createBinIcon(color);
+      const icon = createBinIcon(L, color);
 
       const marker = L.marker([bin.lat, bin.lng], { icon })
         .addTo(mapRef.current!)
@@ -122,45 +122,73 @@ export default function PublicMapClient() {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const bounds: L.LatLngBoundsExpression = [
-      [8.48, 124.65],
-      [8.491, 124.662],
-    ];
+    let mounted = true;
 
-    const map = L.map(mapContainerRef.current, {
-      center: USTP_CENTER,
-      zoom: 17,
-      minZoom: 15,
-      maxZoom: 19,
-      maxBounds: bounds,
-      maxBoundsViscosity: 1.0,
-    });
+    const initializeMap = async () => {
+      // Dynamically import Leaflet only in the browser
+      const L = await import("leaflet");
+      const leafletModule = L.default || L;
+      LRef.current = leafletModule;
 
-    mapRef.current = map;
+      // Import CSS dynamically
+      await import("leaflet/dist/leaflet.css");
 
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      {
-        attribution: "&copy; OpenStreetMap & CARTO",
+      if (!mounted || !mapContainerRef.current) return;
+
+      const bounds: any = [
+        [8.48, 124.65],
+        [8.491, 124.662],
+      ];
+
+      const map = leafletModule.map(mapContainerRef.current, {
+        center: USTP_CENTER,
+        zoom: 17,
+        minZoom: 15,
         maxZoom: 19,
-      },
-    ).addTo(map);
+        maxBounds: bounds,
+        maxBoundsViscosity: 1.0,
+      });
 
-    setTimeout(() => map.invalidateSize(), 100);
-    setTimeout(() => map.invalidateSize(), 500);
-    setTimeout(() => map.invalidateSize(), 1000);
+      mapRef.current = map;
 
-    // Initial load
-    loadBins().then(renderMarkers);
+      leafletModule
+        .tileLayer(
+          "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+          {
+            attribution: "&copy; OpenStreetMap & CARTO",
+            maxZoom: 19,
+          },
+        )
+        .addTo(map);
 
-    // Poll every 15 seconds
-    const interval = setInterval(async () => {
-      const data = await loadBins();
-      renderMarkers(data);
-    }, 15000);
+      setTimeout(() => map.invalidateSize(), 100);
+      setTimeout(() => map.invalidateSize(), 500);
+      setTimeout(() => map.invalidateSize(), 1000);
+
+      // Initial load
+      const initialBins = await loadBins();
+      if (mounted) {
+        renderMarkers(initialBins, leafletModule);
+      }
+
+      // Poll every 15 seconds
+      const interval = setInterval(async () => {
+        const data = await loadBins();
+        if (mounted && mapRef.current) {
+          renderMarkers(data, leafletModule);
+        }
+      }, 15000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    };
+
+    const cleanup = initializeMap().then((cleanupFn) => cleanupFn);
 
     return () => {
-      clearInterval(interval);
+      mounted = false;
+      cleanup.then((cleanupFn) => cleanupFn?.());
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;

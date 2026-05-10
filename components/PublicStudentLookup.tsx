@@ -69,14 +69,14 @@ export default function PublicStudentLookup() {
       id: string;
       condition: string;
       created_at: string;
-      bins?: { name?: string } | null;
+      bins: { name?: string }[] | null;
     };
 
     const recentReports: RecentReport[] = (reportsData ?? []).map(
       (r: RawReport) => ({
         id: r.id.slice(0, 8).toUpperCase(),
-        title: r.bins?.name
-          ? `${r.bins.name} — ${r.condition.replace(/_/g, " ")}`
+        title: r.bins?.[0]?.name
+          ? `${r.bins[0].name} — ${r.condition.replace(/_/g, " ")}`
           : `Report — ${r.condition.replace(/_/g, " ")}`,
         points: 50,
         created_at: r.created_at,

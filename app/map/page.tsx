@@ -1,3 +1,5 @@
+"use client";
+
 import PublicMapClient from "./PublicMapClient";
 import Link from "next/link";
 
