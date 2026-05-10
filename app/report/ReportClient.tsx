@@ -191,7 +191,17 @@ export default function ReportClient({ bin, activeReport }: Props) {
 
     // Award points if student ID provided
     if (studentId.trim()) {
-      const points = 50;
+      // Fetch points value for this condition from settings
+      const settingsRes = await fetch("/api/admin/settings");
+      const settingsData = await settingsRes.json();
+
+      const pointsMap: Record<string, number> = {
+        overflowing: parseInt(settingsData.points_overflowing ?? "50"),
+        almost_full: parseInt(settingsData.points_almost_full ?? "30"),
+        damaged: parseInt(settingsData.points_damaged ?? "40"),
+      };
+
+      const points = pointsMap[condition] ?? 50;
 
       const { data: existing } = await supabase
         .from("student_points")
@@ -279,7 +289,7 @@ export default function ReportClient({ bin, activeReport }: Props) {
           <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-[#4c616c]">
             Student ID{" "}
             <span className="normal-case font-normal text-[#4c616c]">
-              (optional — earn 50 points)
+              (optional — earn points)
             </span>
           </label>
           <input
