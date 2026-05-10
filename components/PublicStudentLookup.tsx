@@ -86,12 +86,13 @@ export default function PublicStudentLookup() {
   }
 
   function timeAgo(dateStr: string) {
+    // eslint-disable-next-line react-hooks/purity
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1)  return "just now";
+    if (mins < 1) return "just now";
     if (mins < 60) return `${mins}m ago`;
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24)  return `${hrs}h ago`;
+    if (hrs < 24) return `${hrs}h ago`;
     return `${Math.floor(hrs / 24)}d ago`;
   }
 
@@ -141,7 +142,6 @@ export default function PublicStudentLookup() {
 
           {/* Result Area */}
           <div className="rounded-3xl border border-dashed border-green-700/30 bg-[#f7faf7] p-5">
-
             {/* Default state */}
             {!submittedQuery && (
               <>
@@ -149,8 +149,8 @@ export default function PublicStudentLookup() {
                   No result yet
                 </p>
                 <p className="mt-2 text-sm text-[#4c616c]">
-                  Enter your Student ID and click Lookup to see your points
-                  and contribution history.
+                  Enter your Student ID and click Lookup to see your points and
+                  contribution history.
                 </p>
               </>
             )}
@@ -171,8 +171,9 @@ export default function PublicStudentLookup() {
                   No student found
                 </p>
                 <p className="mt-2 text-sm text-[#4c616c]">
-                  No record found for "{submittedQuery}". Make sure you've
-                  submitted at least one report with your Student ID.
+                  No record found for &quot;{submittedQuery}&quot;. Make sure
+                  you&apos;ve submitted at least one report with your Student
+                  ID.
                 </p>
               </>
             )}
@@ -180,7 +181,6 @@ export default function PublicStudentLookup() {
             {/* Result */}
             {!loading && result && (
               <div className="space-y-5">
-
                 {/* Header */}
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.25em] text-green-700">
@@ -261,8 +261,7 @@ export default function PublicStudentLookup() {
                               {report.title}
                             </p>
                             <p className="text-xs text-[#4c616c]">
-                              Ref: {report.id} ·{" "}
-                              {timeAgo(report.created_at)}
+                              Ref: {report.id} · {timeAgo(report.created_at)}
                             </p>
                           </div>
                           <span className="rounded-full bg-[#d9f6d4] px-3 py-1 text-xs font-bold text-[#0f4a16]">

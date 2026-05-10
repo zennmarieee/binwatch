@@ -49,6 +49,7 @@ export default async function ReportPage({
   // After fetching the bin, check cooldown
   if (bin.status === "resolved" && bin.resolved_at) {
     const resolvedAt = new Date(bin.resolved_at).getTime();
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
     const cooldownMs = 15 * 60 * 1000; // 15 minutes
 

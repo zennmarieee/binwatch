@@ -147,9 +147,8 @@ export default function PublicMapClient() {
     ).addTo(map);
 
     setTimeout(() => map.invalidateSize(), 100);
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 600);
+    setTimeout(() => map.invalidateSize(), 500);
+    setTimeout(() => map.invalidateSize(), 1000);
 
     // Initial load
     loadBins().then(renderMarkers);
@@ -184,12 +183,10 @@ export default function PublicMapClient() {
       <div className="relative flex-1">
         <div
           ref={mapContainerRef}
-          className="w-full"
-          style={{ height: "60vh", minHeight: "350px" }}
+          style={{ height: "100%", width: "100%", minHeight: "400px" }}
         />
-
         {/* Last updated badge */}
-        <div className="absolute bottom-4 left-4 z-[1000] rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-[#4c616c] shadow backdrop-blur-sm">
+        <div className="absolute bottom-4 left-4 z-1000 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-[#4c616c] shadow backdrop-blur-sm">
           Updated {lastUpdated.toLocaleTimeString()}
         </div>
       </div>
@@ -237,7 +234,7 @@ export default function PublicMapClient() {
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2">
                 <span
-                  className="h-3 w-3 flex-shrink-0 rounded-full"
+                  className="h-3 w-3 shrink-0 rounded-full"
                   style={{ backgroundColor: item.color }}
                 />
                 <span className="text-xs font-medium text-[#4c616c]">
@@ -280,7 +277,7 @@ export default function PublicMapClient() {
                     </p>
                   </div>
                   <span
-                    className={`flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${getStatusBadgeClass(bin.status)}`}
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${getStatusBadgeClass(bin.status)}`}
                   >
                     {bin.status === "no_active_report"
                       ? "Clear"

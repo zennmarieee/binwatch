@@ -412,7 +412,7 @@ export default function AdminStaffClient({ profiles, currentUserId }: Props) {
               <span className="font-bold text-[#191c1d]">
                 {deleteModal.name}
               </span>
-              's account? This action cannot be undone.
+              &apos;s account? This action cannot be undone.
             </p>
 
             <div className="mt-6 flex gap-3">

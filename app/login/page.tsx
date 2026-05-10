@@ -108,7 +108,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-[#4c616c]">
-          Students don't need to log in.{" "}
+          Students don&apos;t need to log in.{" "}
           <Link href="/" className="font-bold text-green-700 hover:underline">
             Go to homepage →
           </Link>

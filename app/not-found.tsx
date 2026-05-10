@@ -10,7 +10,7 @@ export default function NotFound() {
           Page Not Found
         </p>
         <p className="mt-2 text-sm text-[#4c616c]">
-          The page you're looking for doesn't exist or has been moved.
+          The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
 
         <div className="mt-6 flex flex-col gap-3">
