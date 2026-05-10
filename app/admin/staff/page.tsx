@@ -2,11 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AdminStaffClient from "./AdminStaffClient";
 import LogoutButton from "../components/LogoutButton";
-
+import Link from "next/link";
 
 export default async function AdminStaffPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
@@ -29,12 +31,12 @@ export default async function AdminStaffPage() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between">
           <div>
-          <a  
+            <Link
               href="/admin"
               className="text-sm font-bold text-green-700 hover:underline"
             >
               ← Back to Dashboard
-            </a>
+            </Link>
             <h1 className="mt-2 text-3xl font-black text-[#102013]">
               Staff Management
             </h1>
@@ -45,10 +47,7 @@ export default async function AdminStaffPage() {
           <LogoutButton />
         </div>
 
-        <AdminStaffClient
-          profiles={profiles ?? []}
-          currentUserId={user.id}
-        />
+        <AdminStaffClient profiles={profiles ?? []} currentUserId={user.id} />
       </div>
     </div>
   );

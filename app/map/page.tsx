@@ -1,4 +1,5 @@
 import PublicMapClient from "./PublicMapClient";
+import Link from "next/link";
 
 export default function PublicMapPage() {
   return (
@@ -7,12 +8,12 @@ export default function PublicMapPage() {
       <div className="border-b border-black/5 bg-white px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <a
+            <Link
               href="/"
               className="text-sm font-bold text-green-700 hover:underline"
             >
               ← Back
-            </a>
+            </Link>
             <span className="text-black/20">|</span>
             <div>
               <h1 className="text-lg font-black text-[#102013]">

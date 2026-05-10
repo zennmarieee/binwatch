@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,10 +18,12 @@ export default function LoginPage() {
 
     const supabase = createClient();
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error: signInError } = await supabase.auth.signInWithPassword(
+      {
+        email,
+        password,
+      },
+    );
 
     if (signInError || !data.user) {
       setError("Invalid email or password.");
@@ -54,16 +57,11 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
       <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 shadow-lg">
-
         {/* Logo */}
         <div className="mb-6 text-center">
           <p className="text-3xl">🗑️</p>
-          <h1 className="mt-2 text-2xl font-black text-[#102013]">
-            BinWatch
-          </h1>
-          <p className="mt-1 text-sm text-[#4c616c]">
-            Staff & Admin Portal
-          </p>
+          <h1 className="mt-2 text-2xl font-black text-[#102013]">BinWatch</h1>
+          <p className="mt-1 text-sm text-[#4c616c]">Staff & Admin Portal</p>
         </div>
 
         <div className="space-y-4">
@@ -111,9 +109,9 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-xs text-[#4c616c]">
           Students don't need to log in.{" "}
-          <a href="/" className="font-bold text-green-700 hover:underline">
+          <Link href="/" className="font-bold text-green-700 hover:underline">
             Go to homepage →
-          </a>
+          </Link>
         </p>
       </div>
     </div>

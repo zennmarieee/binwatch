@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import ReportClient from "./ReportClient";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function ReportPage({
@@ -34,32 +35,33 @@ export default async function ReportPage({
           <p className="mt-2 text-sm text-[#4c616c]">
             This QR code is no longer active or does not exist.
           </p>
-        <a
+          <Link
             href="/"
-            className="mt-6 inline-block rounded-xl bg-[#176d25] px-6 py-3 font-bold text-white" >
+            className="mt-6 inline-block rounded-xl bg-[#176d25] px-6 py-3 font-bold text-white"
+          >
             Go Home
-          </a>
+          </Link>
         </div>
       </div>
     );
   }
 
   // After fetching the bin, check cooldown
-    if (bin.status === "resolved" && bin.resolved_at) {
+  if (bin.status === "resolved" && bin.resolved_at) {
     const resolvedAt = new Date(bin.resolved_at).getTime();
     const now = Date.now();
     const cooldownMs = 15 * 60 * 1000; // 15 minutes
 
     if (now - resolvedAt > cooldownMs) {
-        // Cooldown passed — reset bin to no_active_report
-        await supabase
+      // Cooldown passed — reset bin to no_active_report
+      await supabase
         .from("bins")
         .update({ status: "no_active_report", resolved_at: null })
         .eq("id", bin.id);
 
-        bin.status = "no_active_report";
+      bin.status = "no_active_report";
     }
-    }
+  }
 
   // Fetch active report for this bin if any
   const { data: activeReport } = await supabase
@@ -69,11 +71,5 @@ export default async function ReportPage({
     .in("status", ["pending", "in_progress"])
     .single();
 
-
-  return (
-    <ReportClient
-      bin={bin}
-      activeReport={activeReport ?? null}
-    />
-  );
+  return <ReportClient bin={bin} activeReport={activeReport ?? null} />;
 }

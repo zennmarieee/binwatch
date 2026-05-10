@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import type { Bin } from "@/lib/bins";
 
 interface Report {
@@ -70,12 +71,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
             <p className="mt-1 font-bold text-[#191c1d]">{bin.name}</p>
             <p className="text-sm text-[#4c616c]">{bin.location_name}</p>
           </div>
-          <a
+          <Link
             href="/"
             className="mt-6 inline-block rounded-xl border border-[#176d25] px-6 py-3 font-bold text-[#176d25]"
           >
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -101,12 +102,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
             <p className="mt-1 font-bold text-[#191c1d]">{bin.name}</p>
             <p className="text-sm text-[#4c616c]">{bin.location_name}</p>
           </div>
-          <a
+          <Link
             href="/"
             className="mt-6 inline-block rounded-xl border border-[#176d25] px-6 py-3 font-bold text-[#176d25]"
           >
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -144,12 +145,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
             <p className="text-sm text-[#4c616c]">{bin.location_name}</p>
           </div>
 
-          <a
+          <Link
             href="/"
             className="mt-6 inline-block rounded-xl bg-[#176d25] px-6 py-3 font-bold text-white"
           >
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     );
