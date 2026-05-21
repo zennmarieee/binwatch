@@ -131,13 +131,30 @@ export default function PublicStudentLookup() {
                 className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5f6c62]"
                 aria-hidden="true"
               />
+
               <input
-                className="w-full rounded-full border border-black/5 bg-white py-4 pl-11 pr-5 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
-                placeholder="Enter Student ID (e.g. STU-2024-0142)"
+                className="w-full rounded-full border border-black/5 bg-white py-4 pl-11 pr-10 text-sm font-medium text-[#191c1d] placeholder:text-[#707a6c] focus:ring-2 focus:ring-green-700/20"
+                placeholder="Enter Student ID (e.g. 2023300397)"
                 type="text"
                 value={studentQuery}
                 onChange={(e) => setStudentQuery(e.target.value)}
               />
+
+              {/* Clear button */}
+              {studentQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudentQuery("");
+                    setSubmittedQuery("");
+                    setResult(null);
+                    setNotFound(false);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/5 px-2 py-1 text-xs text-[#4c616c] hover:bg-black/10"
+                >
+                  ✕
+                </button>
+              )}
             </div>
             <button
               className="inline-flex items-center justify-center rounded-full bg-[#176d25] px-6 py-4 font-bold text-white transition-colors hover:bg-[#12581e] disabled:opacity-50"

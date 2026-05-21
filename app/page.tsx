@@ -8,6 +8,7 @@ import { homepageContent } from "../data/homepageContent";
 import { PublicHeader } from "../components/PublicHeader";
 import PublicStudentLookup from "../components/PublicStudentLookup";
 import Hero from "@/components/Hero";
+import Footer from "@/components/Footer";
 
 const MapPreview = dynamic(() => import("../components/MapPreview"), {
   ssr: false,
@@ -134,6 +135,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
