@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Binwatch
 
-## Getting Started
+Binwatch is a lightweight Next.js app for monitoring and reporting on campus bins. It provides a public map, a reporting flow (QR codes and web reports), and an admin area with analytics and bin management.
 
-First, run the development server:
+## Features
+
+- Admin dashboard for staff: manage bins and view analytics.
+- Public map showing bin locations and statuses.
+- Report a bin (QR code + web form) with photo and notes.
+- QR code generation for individual bins.
+- Supabase integration for authentication and data storage.
+
+## Quick Start
+
+Prerequisites: Node 18+ and npm.
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create a `.env` file with your Supabase credentials (example):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Build for production:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Layout
 
-To learn more about Next.js, take a look at the following resources:
+- `app/` — Next.js app routes and pages (public site + admin).
+- `components/` — React UI components used across the app.
+- `lib/` — shared utilities (Supabase helpers, QR helpers, etc.).
+- `data/` — seed or static data used during development.
+- `api/` — server routes for analytics, bin QR generation, and admin actions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` — development server
+- `npm run build` — create production build
+- `npm start` — run production server
+- `npm run lint` — run ESLint
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions welcome — open an issue or submit a PR. Keep changes focused and add notes in your PR describing the intent.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+
+- This project uses Supabase for backend services and Leaflet for mapping.
+- See `package.json` for a list of dependencies and dev tools.
+
+If you'd like, I can also add environment examples, badges, or CI instructions.
