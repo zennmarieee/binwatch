@@ -182,13 +182,20 @@ export default function ReportClient({ bin, activeReport }: Props) {
 
     // Update bin status to pending
     // Update bin status to pending and clear resolved_at
-    await supabase
+    const { error: binError } = await supabase
       .from("bins")
       .update({
         status: "pending",
-        resolved_at: null, // ← clear this so cooldown resets
+        resolved_at: null,
       })
       .eq("id", bin.id);
+
+    if (binError) {
+      console.error("Bin update failed:", JSON.stringify(binError));
+      setError("Failed to update bin status. Please try again.");
+      setLoading(false);
+      return;
+    }
 
     // Award points if student ID provided
     if (studentId.trim()) {
