@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -57,11 +58,13 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
       <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 shadow-lg">
-        {/* Logo */}
-        <div className="mb-6 text-center">
-          <p className="text-3xl">🗑️</p>
-          <h1 className="mt-2 text-2xl font-black text-[#102013]">BinWatch</h1>
-          <p className="mt-1 text-sm text-[#4c616c]">Staff & Admin Portal</p>
+        <div className="mb-6 flex justify-center text-center">
+          <BrandMark
+            label="BinWatch"
+            subtitle="Staff & Admin Portal"
+            size="lg"
+            className="justify-center"
+          />
         </div>
 
         <div className="space-y-4">

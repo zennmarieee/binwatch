@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import ReportClient from "./ReportClient";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import BrandMark from "@/components/BrandMark";
 
 export default async function ReportPage({
   searchParams,
@@ -28,7 +29,12 @@ export default async function ReportPage({
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
         <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
-          <p className="text-4xl">🗑️</p>
+          <BrandMark
+            label="BinWatch"
+            subtitle="Bin lookup"
+            size="md"
+            className="justify-center"
+          />
           <h1 className="mt-4 text-xl font-extrabold text-[#102013]">
             Bin Not Found
           </h1>

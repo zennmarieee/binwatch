@@ -1,10 +1,16 @@
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
       <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
-        <p className="text-5xl">🗑️</p>
+        <BrandMark
+          label="BinWatch"
+          subtitle="Page not found"
+          size="lg"
+          className="justify-center"
+        />
         <h1 className="mt-4 text-6xl font-black text-[#102013]">404</h1>
         <p className="mt-2 text-xl font-extrabold text-[#191c1d]">
           Page Not Found

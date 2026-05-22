@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import BrandMark from "./BrandMark";
 
 type HeaderLink = {
   label: string;
@@ -61,15 +62,7 @@ export function PublicHeader({ brand, links, badgeText }: PublicHeaderProps) {
     <nav className="fixed top-0 z-50 w-full border-b border-black/5 bg-[#f7faf7]/78 shadow-sm backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="relative h-6 w-6">
-              <span className="absolute left-0 top-0 h-4 w-4 rounded-sm bg-[#176d25]" />
-              <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#176d25] bg-[#d8f4d7]" />
-            </span>
-            <span className="text-xl font-black tracking-[-0.02em] text-green-900">
-              {brand}
-            </span>
-          </div>
+          <BrandMark label={brand} size="sm" />
           <div className="hidden items-center space-x-6 md:flex">
             {links.map((link) => (
               <a

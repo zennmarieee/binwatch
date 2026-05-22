@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import type { Bin } from "@/lib/bins";
+import BrandMark from "@/components/BrandMark";
 
 interface Report {
   id: string;
@@ -53,9 +54,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
         <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
-          <p className="text-4xl">
-            {activeReport.status === "pending" ? "📋" : "🔧"}
-          </p>
+          <BrandMark
+            label="BinWatch"
+            subtitle="Report status"
+            size="md"
+            className="justify-center"
+          />
           <h1 className="mt-4 text-xl font-extrabold text-[#102013]">
             Already Reported
           </h1>
@@ -87,7 +91,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
         <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
-          <p className="text-4xl">✅</p>
+          <BrandMark
+            label="BinWatch"
+            subtitle="Reporting paused"
+            size="md"
+            className="justify-center"
+          />
           <h1 className="mt-4 text-xl font-extrabold text-[#102013]">
             Recently Resolved
           </h1>
@@ -118,7 +127,12 @@ export default function ReportClient({ bin, activeReport }: Props) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f7faf7] px-4">
         <div className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 text-center shadow-lg">
-          <p className="text-4xl">✅</p>
+          <BrandMark
+            label="BinWatch"
+            subtitle="Submission complete"
+            size="md"
+            className="justify-center"
+          />
           <h1 className="mt-4 text-xl font-extrabold text-[#102013]">
             Report Submitted!
           </h1>
@@ -254,8 +268,13 @@ export default function ReportClient({ bin, activeReport }: Props) {
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="mb-6 text-center">
-          <p className="text-4xl">🗑️</p>
-          <h1 className="mt-3 text-2xl font-black text-[#102013]">
+          <BrandMark
+            label="BinWatch"
+            subtitle="Public report form"
+            size="md"
+            className="justify-center"
+          />
+          <h1 className="mt-4 text-2xl font-black text-[#102013]">
             Report This Bin
           </h1>
           <p className="mt-1 text-sm font-bold text-[#4c616c]">{bin.name}</p>

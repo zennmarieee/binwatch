@@ -7,6 +7,7 @@ import {
   School,
   Shield,
 } from "lucide-react";
+import BrandMark from "./BrandMark";
 
 export default function Footer() {
   return (
@@ -15,10 +16,12 @@ export default function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-bold text-[#102013]">BinWatch</h3>
-            <p className="text-sm text-[#4c616c]">
-              Smart Waste Monitoring for Campuses
-            </p>
+            <BrandMark
+              label="BinWatch"
+              subtitle="Smart Waste Monitoring for Campuses"
+              size="md"
+              className="items-start"
+            />
           </div>
 
           {/* Support & Contact */}

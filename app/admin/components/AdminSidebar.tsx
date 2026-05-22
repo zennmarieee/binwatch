@@ -14,6 +14,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import BrandMark from "@/components/BrandMark";
 
 interface Props {
   userEmail: string;
@@ -45,15 +46,12 @@ function SidebarContent({
     <div className="flex h-full flex-col">
       {/* Brand */}
       <div className="border-b border-white/10 px-6 py-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-600">
-            <Trash2 className="h-4 w-4 text-white" />
-          </div>
-          <div>
-            <p className="font-black text-white">BinWatch</p>
-            <p className="text-xs text-white/50">Admin Portal</p>
-          </div>
-        </div>
+        <BrandMark
+          label="BinWatch"
+          subtitle="Admin Portal"
+          size="sm"
+          tone="dark"
+        />
       </div>
 
       {/* Nav */}
@@ -130,12 +128,7 @@ export default function AdminSidebar({ userEmail, userName }: Props) {
 
       {/* Mobile Top Bar */}
       <div className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between bg-[#0f1f12] px-4 py-3 lg:hidden">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-600">
-            <Trash2 className="h-3.5 w-3.5 text-white" />
-          </div>
-          <p className="font-black text-white">BinWatch</p>
-        </div>
+        <BrandMark label="BinWatch" size="sm" tone="dark" />
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white"
