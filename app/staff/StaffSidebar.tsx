@@ -75,11 +75,7 @@ export default function StaffSidebar({
           <div className="flex h-full flex-col">
             <div className="flex items-start justify-between gap-4 lg:block">
               <div>
-                <BrandMark
-                  label="BinWatch"
-                  subtitle="Staff Portal"
-                  size="sm"
-                />
+                <BrandMark label="BinWatch" subtitle="Staff Portal" size="sm" />
                 <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700">
                   <LayoutDashboard className="h-3.5 w-3.5" />
                   Staff Space

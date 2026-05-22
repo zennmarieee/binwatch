@@ -40,14 +40,20 @@ export default function BrandMark({
 
   return (
     <div className={`inline-flex items-center gap-3 ${className}`}>
-      <span className={`relative inline-flex shrink-0 items-center justify-center ${styles.mark}`}>
-        <span className={`absolute left-0 top-0 h-3/5 w-3/5 rounded-[0.35rem] ${squareColor}`} />
+      <span
+        className={`relative inline-flex shrink-0 items-center justify-center ${styles.mark}`}
+      >
+        <span
+          className={`absolute left-0 top-0 h-3/5 w-3/5 rounded-[0.35rem] ${squareColor}`}
+        />
         <span
           className={`absolute bottom-0 right-0 h-3/5 w-3/5 rounded-full border-2 ${ringColor} ${circleColor}`}
         />
       </span>
       <span className="min-w-0">
-        <span className={`block font-black tracking-[-0.02em] ${styles.label} ${titleColor}`}>
+        <span
+          className={`block font-black tracking-[-0.02em] ${styles.label} ${titleColor}`}
+        >
           {label}
         </span>
         {subtitle ? (
