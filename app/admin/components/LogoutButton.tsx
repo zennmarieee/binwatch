@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { LogOut } from "lucide-react";
 
 export default function LogoutButton() {
   async function handleLogout() {
@@ -12,8 +13,9 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="rounded-xl border border-black/10 px-4 py-2 text-sm font-bold text-[#4c616c] transition-colors hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
     >
+      <LogOut className="h-4 w-4" />
       Sign Out
     </button>
   );

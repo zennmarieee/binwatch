@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AlertTriangle, Award, Save, Wrench } from "lucide-react";
 
 interface Settings {
   points_overflowing: string;
@@ -83,22 +84,22 @@ export default function AdminSettings() {
       key: "points_overflowing" as keyof Settings,
       label: "Overflowing",
       description: "Bin is full and spilling over",
-      emoji: "🚨",
-      color: "bg-red-50 border-red-100",
+      icon: AlertTriangle,
+      tone: "border-rose-200 bg-rose-50/70 text-rose-700",
     },
     {
       key: "points_almost_full" as keyof Settings,
       label: "Almost Full",
       description: "Bin is getting full",
-      emoji: "⚠️",
-      color: "bg-orange-50 border-orange-100",
+      icon: Award,
+      tone: "border-amber-200 bg-amber-50/70 text-amber-700",
     },
     {
       key: "points_damaged" as keyof Settings,
       label: "Damaged",
       description: "Bin is broken or damaged",
-      emoji: "🔧",
-      color: "bg-yellow-50 border-yellow-100",
+      icon: Wrench,
+      tone: "border-sky-200 bg-sky-50/70 text-sky-700",
     },
   ];
 
@@ -117,18 +118,19 @@ export default function AdminSettings() {
 
   return (
     <div className="mt-6 space-y-4">
-
       {/* Point Fields */}
       {pointFields.map((field) => (
         <div
           key={field.key}
-          className={`flex items-center justify-between rounded-2xl border p-4 ${field.color}`}
+          className={`flex items-center justify-between rounded-2xl border p-4 shadow-sm ${field.tone}`}
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{field.emoji}</span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 shadow-sm">
+              <field.icon className="h-5 w-5" />
+            </span>
             <div>
-              <p className="font-bold text-[#191c1d]">{field.label}</p>
-              <p className="text-xs text-[#4c616c]">{field.description}</p>
+              <p className="font-semibold text-slate-900">{field.label}</p>
+              <p className="text-xs text-slate-500">{field.description}</p>
             </div>
           </div>
 
@@ -140,24 +142,26 @@ export default function AdminSettings() {
               onChange={(e) =>
                 setSettings({ ...settings, [field.key]: e.target.value })
               }
-              className="w-20 rounded-xl border border-black/10 px-3 py-2 text-center text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-700/20"
+              className="w-24 rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-900 shadow-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
             />
-            <span className="text-xs font-bold text-[#4c616c]">pts</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+              pts
+            </span>
           </div>
         </div>
       ))}
 
       {/* Error */}
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
           {error}
         </p>
       )}
 
       {/* Success */}
       {success && (
-        <p className="rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          ✓ Settings saved successfully.
+        <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+          Settings saved successfully.
         </p>
       )}
 
@@ -165,11 +169,11 @@ export default function AdminSettings() {
       <button
         onClick={handleSave}
         disabled={saving || !hasChanges}
-        className="rounded-xl bg-[#176d25] px-6 py-3 font-bold text-white transition-colors hover:bg-[#12581e] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
+        <Save className="h-4 w-4" />
         {saving ? "Saving..." : hasChanges ? "Save Settings" : "No Changes"}
       </button>
-
     </div>
   );
 }

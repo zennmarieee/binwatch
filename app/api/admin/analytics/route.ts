@@ -44,17 +44,26 @@ export async function GET() {
   }
 
   // Most reported bins (top 5)
-  const { data: allReports } = await supabase
-    .from("reports")
-    .select("bin_id, bins(name)");
+  // Most reported bins (top 5)
+  const { data: allReports } = await supabase.from("reports").select(`
+    bin_id,
+    bins!inner (
+      name
+    )
+  `);
 
   const binCounts: Record<string, { name: string; count: number }> = {};
-  type RawReport = { bin_id: string; bins: { name?: string }[] | null };
-  allReports?.forEach((r: RawReport) => {
-    if (!binCounts[r.bin_id]) {
-      binCounts[r.bin_id] = { name: r.bins?.[0]?.name ?? "Unknown", count: 0 };
+
+  allReports?.forEach((r: any) => {
+    const binId = r.bin_id;
+    const binName = r.bins?.name ?? null;
+
+    if (!binName) return; // skip if no bin name
+
+    if (!binCounts[binId]) {
+      binCounts[binId] = { name: binName, count: 0 };
     }
-    binCounts[r.bin_id].count++;
+    binCounts[binId].count++;
   });
 
   const topBins = Object.values(binCounts)
