@@ -26,7 +26,7 @@ function createPinIcon(leaflet: LeafletModule) {
     className: "",
     html: `
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" fill="none">
-        <path d="M22 42s10-11.2 10-20a10 10 0 1 0-20 0c0 8.8 10 20 10 20Z" fill="#0f766e"/>
+        <path d="M22 42s10-11.2 10-20a10 10 0 1 0-20 0c0 8.8 10 20 10 20Z" fill="#e11d48"/>
         <circle cx="22" cy="22" r="5.5" fill="#ffffff"/>
       </svg>
     `,

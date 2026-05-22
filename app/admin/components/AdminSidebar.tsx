@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import {
   LayoutDashboard,
+  Award,
   Trash2,
   Users,
   ClipboardList,
@@ -21,6 +22,7 @@ interface Props {
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Student Points", href: "/admin/student-points", icon: Award },
   { label: "Bins", href: "/admin/bins", icon: Trash2 },
   { label: "Staff", href: "/admin/staff", icon: Users },
   { label: "Activity Log", href: "/admin/activity", icon: ClipboardList },
@@ -41,7 +43,6 @@ function SidebarContent({
 }) {
   return (
     <div className="flex h-full flex-col">
-
       {/* Brand */}
       <div className="border-b border-white/10 px-6 py-5">
         <div className="flex items-center gap-3">
@@ -76,7 +77,7 @@ function SidebarContent({
                   : "text-white/50 hover:bg-white/10 hover:text-white"
               }`}
             >
-              <Icon className="h-4 w-4 flex-shrink-0" />
+              <Icon className="h-4 w-4 shrink-0" />
               {item.label}
               {isActive && (
                 <span className="ml-auto h-1.5 w-1.5 rounded-full bg-green-400" />
@@ -117,7 +118,7 @@ export default function AdminSidebar({ userEmail, userName }: Props) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden h-screen w-64 flex-shrink-0 bg-[#0f1f12] lg:flex lg:flex-col">
+      <aside className="hidden h-screen w-64 shrink-0 bg-[#0f1f12] lg:flex lg:flex-col">
         <SidebarContent
           userName={userName}
           userEmail={userEmail}
@@ -139,7 +140,11 @@ export default function AdminSidebar({ userEmail, userName }: Props) {
           onClick={() => setMobileOpen(!mobileOpen)}
           className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white"
         >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
 

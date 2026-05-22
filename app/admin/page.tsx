@@ -43,6 +43,7 @@ export default function AdminPage() {
           </div>
 
           {/* Points Settings */}
+          {/* Points Settings */}
           <div className="mt-8">
             <h2 className="text-xl font-bold text-slate-900">
               Points Settings
